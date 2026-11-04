@@ -1,0 +1,1153 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#f4ede1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="스트레스 룸">
+<meta name="description" content="반려의 방 · 업무 파쇄기 · 사직서 던지기. 폰을 휘둘러 회사 스트레스를 날리는 브릭 스타일 오피스 룸.">
+<title>오피스 스트레스 룸</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect x=%2214%22 y=%224%22 width=%2212%22 height=%229%22 rx=%223%22 fill=%22%23e3412f%22/%3E%3Crect x=%2238%22 y=%224%22 width=%2212%22 height=%229%22 rx=%223%22 fill=%22%23e3412f%22/%3E%3Crect x=%224%22 y=%2210%22 width=%2256%22 height=%2246%22 rx=%2210%22 fill=%22%23e3412f%22/%3E%3Ctext x=%2232%22 y=%2243%22 font-size=%2222%22 text-anchor=%22middle%22 fill=%22%23fff%22 font-family=%22sans-serif%22 font-weight=%22bold%22%3E%EB%B0%98%EB%A0%A4%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4ede1; --ink:#2b2a33; --ink2:#6b6573; --paper:#fffdf7; --line:#e6dccb;
+  --red:#e3412f; --blue:#2f6fd6; --yellow:#f6c026; --green:#38a85a; --orange:#f28c28; --purple:#7a5cd6;
+  --wood:#b57a4a; --wood2:#94603a; --stamp:#d8262a;
+  --lv0:#ece4d6; --lv1:#5cbf73; --lv2:#f6c026; --lv3:#f28c28; --lv4:#e3412f;
+  --safe-b:env(safe-area-inset-bottom,0px); --safe-t:env(safe-area-inset-top,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);overscroll-behavior:none}
+body{font-family:'Gowun Dodum',system-ui,sans-serif;touch-action:manipulation;-webkit-user-select:none;user-select:none;overflow:hidden}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;padding:0}
+input{font:inherit;-webkit-user-select:text;user-select:text}
+h1,h2,h3,.jua{font-family:'Jua',sans-serif;font-weight:400;margin:0}
+
+/* ---------- brick primitives ---------- */
+.brick{--c:var(--red);position:relative;background:var(--c);border-radius:14px;
+  box-shadow:inset 0 -7px 0 rgba(0,0,0,.18),inset 0 2px 0 rgba(255,255,255,.25),0 5px 0 rgba(0,0,0,.08)}
+.brick::before{content:"";position:absolute;top:-8px;left:18px;right:18px;height:9px;border-radius:5px 5px 0 0;
+  background:repeating-linear-gradient(90deg,var(--c) 0 18px,transparent 18px 30px);
+  filter:brightness(1.06)}
+.brick.nostud::before{display:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-family:'Jua',sans-serif;font-size:18px;
+  padding:14px 18px 17px;color:#fff;border-radius:14px;transition:transform .08s}
+.btn:active{transform:translateY(3px)}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:inset 0 -5px 0 #e6dccb,0 3px 0 rgba(0,0,0,.06)}
+.icon-btn{width:42px;height:42px;border-radius:12px;background:#fff;display:grid;place-items:center;font-size:20px;
+  box-shadow:inset 0 -4px 0 #e6dccb}
+.icon-btn:active{transform:translateY(2px)}
+
+/* ---------- screens ---------- */
+.screen{position:fixed;inset:0;display:none;flex-direction:column}
+.screen.active{display:flex}
+
+/* ---------- lobby ---------- */
+#lobby{overflow-y:auto;padding:calc(18px + var(--safe-t)) 16px calc(24px + var(--safe-b));gap:16px;
+  background:radial-gradient(circle at 20% 0%,#fff6e4 0,transparent 50%),var(--bg)}
+.lobby-head{position:relative;text-align:center;padding-top:6px}
+.lobby-head .settings-btn{position:absolute;right:0;top:0}
+.logo{display:inline-flex;gap:6px;margin-bottom:10px}
+.logo i{width:34px;height:22px;border-radius:6px;position:relative;box-shadow:inset 0 -4px 0 rgba(0,0,0,.2)}
+.logo i::before{content:"";position:absolute;top:-5px;left:5px;width:9px;height:6px;border-radius:3px 3px 0 0;background:inherit;box-shadow:15px 0 0 0 currentColor}
+.lobby-head h1{font-size:30px;letter-spacing:-.5px}
+.lobby-head p{margin:6px 0 0;color:var(--ink2);font-size:15px}
+.today-chip{align-self:center;background:#fff;border-radius:999px;padding:8px 14px;font-size:14px;box-shadow:inset 0 -3px 0 #e6dccb;display:flex;gap:8px;align-items:center}
+.today-chip b{font-family:'Jua';font-weight:400}
+.dot{width:12px;height:12px;border-radius:4px;display:inline-block}
+.room-list{display:flex;flex-direction:column;gap:22px;margin-top:10px;max-width:520px;width:100%;align-self:center}
+.room-card{display:flex;align-items:center;gap:14px;padding:16px 16px 21px;text-align:left;color:#fff;width:100%;transition:transform .08s}
+.room-card:active{transform:translateY(3px)}
+.rc-icon{flex:0 0 64px;height:64px;border-radius:14px;background:rgba(255,255,255,.95);display:grid;place-items:center;
+  font-family:'Jua';font-size:20px;box-shadow:inset 0 -4px 0 rgba(0,0,0,.08)}
+.rc-icon.stampy{color:var(--stamp);border:3px double var(--stamp);transform:rotate(-8deg);background:#fff}
+.rc-text h2{font-size:22px}
+.rc-text p{margin:3px 0 6px;font-size:14px;opacity:.95}
+.rc-how{display:inline-block;font-size:12px;background:rgba(0,0,0,.18);border-radius:999px;padding:3px 9px}
+#calBtn{max-width:520px;width:100%;align-self:center;margin-top:12px}
+.foot{text-align:center;color:var(--ink2);font-size:12px;margin:0}
+
+/* ---------- modal ---------- */
+.modal-bg{position:fixed;inset:0;background:rgba(43,42,51,.45);display:none;align-items:flex-end;justify-content:center;z-index:50}
+.modal-bg.show{display:flex;animation:fadeIn .18s}
+.modal{background:var(--paper);width:100%;max-width:520px;border-radius:22px 22px 0 0;padding:22px 18px calc(18px + var(--safe-b));
+  max-height:92vh;overflow-y:auto;animation:sheetUp .25s cubic-bezier(.2,.9,.3,1.2)}
+.modal h3{font-size:24px;margin-bottom:6px}
+.modal .lead{margin:0 0 14px;color:var(--ink2);line-height:1.5}
+.how{display:flex;flex-direction:column;gap:8px;margin:0 0 14px;padding:0;list-style:none}
+.how li{background:#fff;border-radius:12px;padding:10px 12px;box-shadow:inset 0 -3px 0 var(--line);display:flex;gap:10px;align-items:center;line-height:1.35}
+.how li span:first-child{font-size:22px}
+.field{display:block;margin:0 0 14px}
+.field span{display:block;font-family:'Jua';font-size:15px;margin-bottom:6px}
+.field input{width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:#fff;font-size:16px;outline:none}
+.field input:focus{border-color:var(--ink)}
+.field small{display:block;color:var(--ink2);margin-top:5px;font-size:12px}
+.safety{background:#fff4d6;border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.5;margin-bottom:14px}
+.modal-actions{display:flex;gap:10px}
+.modal-actions .btn{flex:1}
+.seg{display:flex;background:#fff;border-radius:12px;padding:4px;gap:4px;box-shadow:inset 0 -3px 0 var(--line)}
+.seg button{flex:1;padding:9px 0;border-radius:9px;font-family:'Jua'}
+.seg button.on{background:var(--ink);color:#fff}
+
+/* ---------- game shell ---------- */
+#game{background:var(--bg)}
+.g-top{display:flex;align-items:center;gap:10px;padding:calc(8px + var(--safe-t)) 12px 8px;position:relative;z-index:5}
+.g-title{flex:1;font-family:'Jua';font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{background:#fff;border-radius:999px;padding:6px 11px;font-family:'Jua';font-size:16px;box-shadow:inset 0 -3px 0 var(--line);white-space:nowrap}
+.pill.timer{min-width:58px;text-align:center}
+.pill.timer.hurry{background:var(--red);color:#fff;box-shadow:inset 0 -3px 0 rgba(0,0,0,.2)}
+.g-progress{height:6px;background:#e6dccb;margin:0 12px;border-radius:3px;overflow:hidden}
+.g-progress i{display:block;height:100%;background:var(--ink);width:100%;transform-origin:left;transition:transform .2s linear}
+.g-stage{flex:1;position:relative;overflow:hidden;touch-action:none}
+.g-hint{display:flex;align-items:center;gap:10px;padding:10px 14px calc(10px + var(--safe-b));background:#fff;font-size:14px;line-height:1.3;
+  box-shadow:0 -3px 0 var(--line);position:relative;z-index:5}
+.g-hint #gHintIcon{font-size:22px}
+.g-hint #gHintText{flex:1}
+.meter{width:54px;height:10px;border-radius:5px;background:#eee4d4;overflow:hidden;flex:0 0 auto}
+.meter i{display:block;height:100%;width:0;background:var(--green);border-radius:5px;transition:width .06s}
+.g-overlay{position:absolute;inset:0;display:none;place-items:center;z-index:20;pointer-events:none}
+.g-overlay.show{display:grid}
+.g-overlay .big{font-family:'Jua';font-size:88px;color:#fff;-webkit-text-stroke:3px var(--ink);text-shadow:0 6px 0 var(--ink);animation:popIn .5s}
+.g-overlay .endmark{font-family:'Jua';font-size:64px;color:var(--stamp);border:8px double var(--stamp);border-radius:18px;padding:6px 28px;background:rgba(255,255,255,.85);transform:rotate(-10deg);animation:stampIn .25s ease-out}
+.combo{position:absolute;left:50%;top:84px;transform:translateX(-50%);font-family:'Jua';font-size:28px;color:var(--orange);
+  -webkit-text-stroke:1.5px #fff;pointer-events:none;z-index:15;opacity:0;white-space:nowrap}
+.combo.show{animation:comboPop .7s ease-out}
+#game.shake{animation:shake .35s}
+#game.shake-s{animation:shakeS .2s}
+
+/* ---------- brick character ---------- */
+.fig{position:relative;width:84px;height:116px;transform-origin:bottom center}
+.fig-hair{position:absolute;left:12px;top:0;width:60px;height:20px;background:#3b2f2a;border-radius:14px 14px 5px 5px;z-index:2}
+.fig-head{position:absolute;left:16px;top:8px;width:52px;height:46px;background:#ffd6ad;border-radius:12px;box-shadow:inset 0 -5px 0 rgba(0,0,0,.08)}
+.fig .eye{position:absolute;top:21px;width:6px;height:8px;background:var(--ink);border-radius:3px;transition:all .1s}
+.fig .eye.l{left:13px}.fig .eye.r{right:13px}
+.fig .brow{position:absolute;top:15px;width:11px;height:3px;background:var(--ink);border-radius:2px}
+.fig .brow.l{left:10px;transform:rotate(12deg)}.fig .brow.r{right:10px;transform:rotate(-12deg)}
+.fig .mouth{position:absolute;left:50%;bottom:8px;width:14px;height:4px;margin-left:-7px;background:var(--ink);border-radius:2px;transition:all .1s}
+.fig .sweat{position:absolute;right:-7px;top:4px;width:9px;height:12px;background:#7cc6ff;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;opacity:0}
+.fig-body{position:absolute;left:6px;top:54px;width:72px;height:58px;background:#3d4b6b;border-radius:14px 14px 6px 6px;box-shadow:inset 0 -6px 0 rgba(0,0,0,.18);overflow:hidden}
+.fig-body::before{content:"";position:absolute;left:50%;top:0;margin-left:-14px;border:14px solid transparent;border-top:20px solid #fff;border-bottom:0}
+.fig-body i{position:absolute;left:50%;top:6px;width:8px;height:30px;margin-left:-4px;background:var(--red);border-radius:2px 2px 4px 4px}
+.fig.shock .eye{width:9px;height:11px;border-radius:50%;top:19px}
+.fig.shock .mouth{width:11px;height:11px;border-radius:50%;margin-left:-5.5px;bottom:5px}
+.fig.shock .sweat{opacity:1;animation:drip .6s ease-in}
+.fig.sad .mouth{height:6px;border-radius:7px 7px 0 0;background:transparent;border:3px solid var(--ink);border-bottom:0}
+.fig.sad .brow.l{transform:rotate(-14deg)}.fig.sad .brow.r{transform:rotate(14deg)}
+.fig.jump{animation:jump .5s}
+.bubble{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#fff;border-radius:14px;padding:7px 12px;font-size:14px;
+  white-space:nowrap;box-shadow:0 3px 0 var(--line);opacity:0;margin-bottom:6px;pointer-events:none}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-7px;margin-left:-7px;border:7px solid transparent;border-top-color:#fff;border-bottom:0}
+.bubble.show{animation:bubble 1.3s ease-out}
+.nameplate{background:#2b2a33;color:#ffe9a8;font-family:'Jua';font-size:13px;padding:4px 10px 6px;border-radius:6px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.4);white-space:nowrap}
+
+/* ---------- room 1: 반려의 방 ---------- */
+.r1{position:absolute;inset:0;background:
+  linear-gradient(transparent 31%,var(--wood) 31%,var(--wood) 36%,var(--wood2) 36%,var(--wood2) 37.5%,transparent 37.5%),
+  repeating-linear-gradient(0deg,transparent 0 23px,rgba(0,0,0,.035) 23px 25px),#efe5d3}
+.r1 .win{position:absolute;top:4%;left:6%;width:26%;height:20%;background:linear-gradient(#bfe3f7,#e3f4fb);border:6px solid #fff;border-radius:8px;box-shadow:0 3px 0 var(--line)}
+.r1 .clock{position:absolute;top:5%;right:8%;width:46px;height:46px;border-radius:50%;background:#fff;border:5px solid var(--ink);box-shadow:0 3px 0 var(--line)}
+.r1 .clock::before,.r1 .clock::after{content:"";position:absolute;left:50%;top:50%;width:3px;background:var(--ink);transform-origin:bottom;border-radius:2px}
+.r1 .clock::before{height:13px;margin:-13px 0 0 -1.5px;transform:rotate(180deg)}
+.r1 .clock::after{height:16px;margin:-16px 0 0 -1.5px;animation:spin 3s linear infinite}
+.r1 .boss-wrap{position:absolute;left:50%;top:31%;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center}
+.r1 .boss-wrap .nameplate{position:absolute;top:100%;margin-top:6px;z-index:2}
+.doc-slot{position:absolute;left:50%;top:41%;bottom:10px;width:min(78%,310px);transform:translateX(-50%)}
+.doc{position:absolute;inset:0;background:var(--paper);border-radius:6px;padding:14px 14px 10px;box-shadow:0 8px 0 rgba(0,0,0,.08),0 1px 0 var(--line);
+  display:flex;flex-direction:column;gap:8px;overflow:hidden;cursor:pointer}
+.doc.enter{animation:docIn .3s cubic-bezier(.2,.9,.3,1.15)}
+.doc.out{animation:docOut .34s ease-in forwards}
+.doc.hit{animation:docHit .2s}
+.doc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.doc-head h4{font-family:'Jua';font-weight:400;font-size:20px;margin:2px 0 0;letter-spacing:2px}
+.sign{border-collapse:collapse;font-size:10px;text-align:center;flex:0 0 auto}
+.sign th{border:1.5px solid var(--ink);padding:1px 6px;font-weight:400;background:#f3ecdf}
+.sign td{border:1.5px solid var(--ink);height:30px;width:34px;position:relative}
+.mini-seal{display:inline-grid;place-items:center;width:24px;height:24px;border:2px solid var(--stamp);border-radius:50%;color:var(--stamp);font-size:8px;line-height:1;transform:rotate(-8deg)}
+.doc-title{font-family:'Jua';font-size:clamp(16px,4.6vw,19px);line-height:1.3;padding:8px 0;border-top:2px solid var(--ink);border-bottom:1px dashed var(--line)}
+.doc-meta{font-size:12px;color:var(--ink2);display:flex;justify-content:space-between;gap:6px}
+.doc-lines{flex:1;display:flex;flex-direction:column;gap:9px;padding-top:4px;min-height:0;overflow:hidden}
+.doc-lines i{display:block;height:7px;border-radius:4px;background:#ece4d6}
+.stamp{position:absolute;left:var(--x,50%);top:var(--y,55%);padding:4px 16px;border:6px double var(--stamp);color:var(--stamp);font-family:'Jua';
+  font-size:50px;letter-spacing:10px;line-height:1.1;border-radius:12px;transform:translate(-50%,-50%) rotate(var(--r)) scale(var(--s));
+  opacity:.9;mix-blend-mode:multiply;animation:stampIn .16s ease-out;white-space:nowrap;padding-left:26px}
+.ink{position:absolute;border-radius:50%;background:var(--stamp);opacity:.75;mix-blend-mode:multiply;animation:popIn .2s}
+.reject-pile{position:absolute;left:8px;bottom:8px;width:76px;display:flex;flex-direction:column;align-items:center;gap:4px;z-index:3;pointer-events:none}
+.pile{position:relative;width:64px;height:52px}
+.pile .tray{position:absolute;left:0;right:0;bottom:0;height:16px;border-radius:5px;background:var(--red);box-shadow:inset 0 -4px 0 rgba(0,0,0,.2)}
+.pile .sheet{position:absolute;left:6px;right:6px;height:5px;background:#fff;border-radius:2px;box-shadow:0 1px 0 var(--line)}
+.pile-label{font-family:'Jua';font-size:12px;background:#fff;border-radius:999px;padding:2px 8px;box-shadow:inset 0 -2px 0 var(--line);white-space:nowrap}
+
+/* ---------- room 2: 업무 파쇄기 ---------- */
+.r2{position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 46px,rgba(0,0,0,.03) 46px 48px),#e9eef5}
+.r2 .pile-badge{position:absolute;right:10px;top:8px;z-index:8;pointer-events:none}
+.inbox{position:absolute;left:0;right:0;top:0;height:50%}
+.task{position:absolute;width:min(46%,180px);padding:9px 10px 11px;background:var(--pc,#fff);border-radius:6px;font-size:13px;line-height:1.35;
+  box-shadow:0 4px 0 rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.04);transform:rotate(var(--r));cursor:grab;touch-action:none}
+.task.drop{animation:taskDrop .3s cubic-bezier(.2,.9,.3,1.2)}
+.task .tag{display:inline-block;font-family:'Jua';font-size:11px;color:#fff;background:var(--tc,var(--red));border-radius:5px;padding:2px 6px;margin-bottom:4px}
+.task p{margin:0}
+.shredder{--c:var(--blue);position:absolute;left:50%;top:52%;width:min(86%,340px);height:15%;min-height:78px;transform:translateX(-50%);
+  display:flex;align-items:center;justify-content:space-between;padding:12px 14px 16px;color:#fff;z-index:6}
+.shredder .slot{position:absolute;left:12%;right:12%;top:-5px;height:10px;border-radius:5px;background:#1a1d29;box-shadow:inset 0 3px 0 rgba(0,0,0,.4);z-index:3}
+.shredder .label{font-family:'Jua';font-size:16px;line-height:1.1}
+.shredder .label small{display:block;font-family:'Gowun Dodum';font-size:11px;opacity:.85}
+.leds{display:flex;gap:4px}
+.leds i{width:11px;height:20px;border-radius:3px;background:rgba(0,0,0,.25)}
+.leds i.on{background:#7dff9a;box-shadow:0 0 8px #7dff9a}
+.leds i.on.hot{background:#ffd23f;box-shadow:0 0 8px #ffd23f}
+.leds i.on.max{background:#ff5d4a;box-shadow:0 0 10px #ff5d4a}
+.turbo{position:absolute;right:10px;top:-34px;font-family:'Jua';font-size:18px;color:var(--red);opacity:0;transition:opacity .15s;-webkit-text-stroke:1px #fff}
+.turbo.on{opacity:1;animation:pulse .3s infinite alternate}
+.bin{position:absolute;left:50%;bottom:8px;width:min(70%,270px);top:calc(52% + max(15%,78px) + 14px);transform:translateX(-50%);
+  border:5px solid rgba(47,111,214,.55);border-top:0;border-radius:0 0 18px 18px;background:rgba(255,255,255,.35);overflow:hidden}
+.bin-fill{position:absolute;left:0;right:0;bottom:0;height:0;transition:height .4s;
+  background:repeating-linear-gradient(90deg,#fff 0 5px,#fff3b0 5px 9px,#fff 9px 13px,#cfe2ff 13px 17px,#ffd6e0 17px 21px)}
+.bin-fill::before{content:"";position:absolute;left:0;right:0;top:-6px;height:12px;
+  background:radial-gradient(circle at 8px 6px,#fff 5px,transparent 6px) 0 0/16px 12px repeat-x}
+.strip{position:absolute;width:5px;height:24px;border-radius:2px;top:0;pointer-events:none;z-index:4}
+
+/* ---------- room 3: 사직서 던지기 ---------- */
+.r3{position:absolute;inset:0;background:linear-gradient(#e7e2f3 0,#e7e2f3 46%,#cdbfa8 46%,#c4b49a 100%)}
+.r3::before{content:"";position:absolute;left:0;right:0;top:46%;bottom:0;
+  background:repeating-linear-gradient(90deg,transparent 0 60px,rgba(0,0,0,.05) 60px 62px)}
+.r3 .win{position:absolute;top:5%;right:7%;width:24%;height:18%;background:linear-gradient(#ffd9a8,#ffe9cf);border:6px solid #fff;border-radius:8px}
+.r3 .frame{position:absolute;top:7%;left:8%;width:58px;height:42px;background:#fff;border:4px solid var(--wood);border-radius:4px;font-family:'Jua';font-size:10px;display:grid;place-items:center;text-align:center;line-height:1.1;color:var(--ink2)}
+.target{position:absolute;left:50%;top:15%;width:min(70%,280px);height:34%;transform:translateX(-50%)}
+.target .boss-wrap{position:absolute;left:50%;top:0;transform:translateX(-50%) scale(.78);transform-origin:top center}
+.desk3{position:absolute;left:0;right:0;bottom:0;height:58%}
+.desk-top{position:absolute;left:0;right:0;top:0;height:46%;background:#c98c58;clip-path:polygon(9% 0,91% 0,100% 100%,0 100%);z-index:2}
+.desk-front{position:absolute;left:0;right:0;top:46%;bottom:0;background:var(--wood2);border-radius:0 0 8px 8px;box-shadow:inset 0 -8px 0 rgba(0,0,0,.18);z-index:2}
+.desk-front .nameplate{position:absolute;left:50%;top:10px;transform:translateX(-50%)}
+.desk3.bump{animation:bump .3s}
+.landed{position:absolute;left:0;right:0;top:0;height:46%;z-index:3}
+.landed .env{position:absolute;width:30px;height:20px;margin:-10px 0 0 -15px;transform:rotate(var(--r))}
+.env{background:#fff;border-radius:3px;box-shadow:0 2px 0 rgba(0,0,0,.15);display:grid;place-items:center;font-family:'Jua';color:var(--ink)}
+.landed .env::after{content:"";width:60%;height:3px;background:var(--stamp);border-radius:2px}
+.holder{position:absolute;left:50%;bottom:6%;width:min(58%,220px);aspect-ratio:1.55;transform:translateX(-50%);touch-action:none}
+.holder .env{position:absolute;inset:0;border-radius:8px;flex-direction:column;box-shadow:0 8px 0 rgba(0,0,0,.12),inset 0 0 0 2px #eee5d6;cursor:grab;
+  background:linear-gradient(160deg,#fff 0 60%,#f7f1e6 60%)}
+.holder .env b{font-weight:400;font-size:clamp(30px,10vw,40px);letter-spacing:8px;padding-left:8px}
+.holder .env small{font-family:'Gowun Dodum';font-size:12px;color:var(--ink2);max-width:90%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.holder .env .seal{position:absolute;right:10px;bottom:10px;width:26px;height:26px;border-radius:50%;background:var(--stamp);color:#fff;font-size:11px;display:grid;place-items:center}
+.holder .env.rise{animation:rise .3s cubic-bezier(.2,.9,.3,1.2)}
+.aim{position:absolute;left:50%;bottom:calc(6% + min(58%,220px)/1.55 + 14px);transform:translateX(-50%);font-family:'Jua';font-size:14px;color:var(--ink2);
+  animation:bob 1.2s ease-in-out infinite;white-space:nowrap;pointer-events:none}
+.pop{position:absolute;font-family:'Jua';pointer-events:none;z-index:12;transform:translate(-50%,-50%);white-space:nowrap;animation:popUp .8s ease-out forwards;-webkit-text-stroke:1.5px #fff}
+.flyer{position:absolute;width:16px;height:12px;background:#fff;border-radius:2px;box-shadow:0 1px 0 rgba(0,0,0,.15);z-index:11;pointer-events:none}
+
+/* ---------- result ---------- */
+#result{overflow-y:auto;padding:calc(24px + var(--safe-t)) 16px calc(20px + var(--safe-b));gap:16px;align-items:center;
+  background:radial-gradient(circle at 50% 0,#fff8ea 0,transparent 60%),var(--bg)}
+.res-card{width:100%;max-width:520px;background:var(--paper);border-radius:22px;padding:24px 20px;box-shadow:0 6px 0 var(--line);text-align:center;margin-top:12px}
+.res-room{display:inline-block;font-family:'Jua';font-size:14px;color:#fff;border-radius:999px;padding:4px 12px;margin-bottom:14px}
+.res-title{font-size:clamp(23px,6.6vw,30px);line-height:1.35;word-break:keep-all}
+.res-title b{font-weight:400;color:var(--lvc,var(--red));font-size:1.25em}
+.res-bricks{display:flex;gap:5px;justify-content:center;margin:20px 0 6px;flex-wrap:nowrap}
+.res-bricks i{flex:1;max-width:30px;height:22px;border-radius:5px;background:var(--lv0);position:relative;box-shadow:inset 0 -4px 0 rgba(0,0,0,.08)}
+.res-bricks i.on{background:var(--lvc);box-shadow:inset 0 -4px 0 rgba(0,0,0,.18);animation:popIn .25s backwards}
+.res-scale{display:flex;justify-content:space-between;font-size:11px;color:var(--ink2);max-width:340px;margin:0 auto}
+.res-stat{font-family:'Jua';font-size:16px;margin:18px 0 0;padding:10px 12px;background:#f6f0e4;border-radius:12px}
+.res-comfort{line-height:1.75;margin:16px 0 0;font-size:16px;word-break:keep-all}
+.res-actions{width:100%;max-width:520px;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+.res-actions .wide{grid-column:1/-1}
+
+/* ---------- calendar ---------- */
+#calendar{overflow-y:auto;padding:calc(10px + var(--safe-t)) 16px calc(20px + var(--safe-b));gap:14px;align-items:center}
+.cal-wrap{width:100%;max-width:520px;display:flex;flex-direction:column;gap:14px}
+.cal-top{display:flex;align-items:center;gap:10px}
+.cal-top h2{flex:1;font-size:22px}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:14px;padding:6px;box-shadow:inset 0 -4px 0 var(--line)}
+.cal-nav h3{font-size:20px}
+.cal-nav button{width:40px;height:36px;border-radius:10px;font-size:18px}
+.cal-nav button:active{background:var(--bg)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal-grid .wd{text-align:center;font-family:'Jua';font-size:13px;color:var(--ink2);padding-bottom:2px}
+.cal-grid .wd:first-child{color:var(--red)}.cal-grid .wd:last-child{color:var(--blue)}
+.cell{aspect-ratio:.8;border-radius:10px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:5px 2px 6px;
+  font-size:12px;box-shadow:inset 0 -3px 0 var(--line);position:relative}
+.cell.empty{background:transparent;box-shadow:none}
+.cell.today{outline:2.5px solid var(--ink);outline-offset:-2px}
+.cell.sel{transform:translateY(-2px);box-shadow:inset 0 -3px 0 var(--line),0 4px 0 rgba(0,0,0,.12)}
+.cell .n{font-family:'Jua'}
+.cell .b{--bc:var(--lv1);width:84%;flex:0 0 auto;height:44%;max-height:30px;border-radius:6px;display:grid;place-items:center;font-family:'Jua';font-size:clamp(9px,2.8vw,12px);color:#fff;
+  background:var(--bc);box-shadow:inset 0 -3px 0 rgba(0,0,0,.18);position:relative}
+.cell .b::before{content:"";position:absolute;top:-3px;left:16%;right:16%;height:4px;border-radius:2px 2px 0 0;
+  background:linear-gradient(90deg,var(--bc) 0 30%,transparent 30% 70%,var(--bc) 70% 100%)}
+.cell .b.lv2{--bc:var(--lv2);color:var(--ink)}.cell .b.lv3{--bc:var(--lv3)}.cell .b.lv4{--bc:var(--lv4)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:center;font-size:12px;color:var(--ink2)}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.cal-sum{background:#fff;border-radius:14px;padding:14px;box-shadow:inset 0 -4px 0 var(--line);line-height:1.6;font-size:14px}
+.cal-sum h4{font-family:'Jua';font-weight:400;font-size:17px;margin:0 0 6px}
+.cal-sum ul{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.cal-sum li{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:10px;padding:7px 10px}
+.cal-sum li .t{color:var(--ink2);font-size:12px;width:40px}
+.cal-sum li .r{flex:1}
+.cal-sum li b{font-family:'Jua';font-weight:400}
+
+/* ---------- keyframes ---------- */
+@keyframes fadeIn{from{opacity:0}}
+@keyframes sheetUp{from{transform:translateY(100%)}}
+@keyframes popIn{from{transform:scale(0);opacity:0}}
+@keyframes stampIn{from{transform:translate(-50%,-50%) rotate(var(--r,-10deg)) scale(calc(var(--s,1)*2.6));opacity:0}}
+@keyframes docIn{from{transform:translateY(-55%) scale(.55);opacity:0}}
+@keyframes docOut{to{transform:translate(-95%,55%) rotate(-28deg) scale(.25);opacity:0}}
+@keyframes docHit{30%{transform:scale(.96) translateY(4px)}}
+@keyframes comboPop{0%{opacity:0;transform:translateX(-50%) scale(.4)}25%{opacity:1;transform:translateX(-50%) scale(1.15)}100%{opacity:0;transform:translateX(-50%) translateY(-24px) scale(1)}}
+@keyframes shake{20%{transform:translate(-7px,4px)}40%{transform:translate(6px,-5px)}60%{transform:translate(-5px,-3px)}80%{transform:translate(4px,4px)}}
+@keyframes shakeS{33%{transform:translate(-3px,2px)}66%{transform:translate(3px,-2px)}}
+@keyframes drip{from{transform:translateY(-6px);opacity:0}}
+@keyframes jump{30%{transform:translateY(-22px) rotate(-4deg)}60%{transform:translateY(0) scaleY(.92)}}
+@keyframes bubble{0%{opacity:0;transform:translateX(-50%) translateY(6px) scale(.7)}12%{opacity:1;transform:translateX(-50%) scale(1)}80%{opacity:1}100%{opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{to{transform:scale(1.12)}}
+@keyframes taskDrop{from{transform:translateY(-140px) rotate(var(--r));opacity:0}}
+@keyframes bump{40%{transform:translateY(5px) scaleY(.97)}}
+@keyframes rise{from{transform:translateY(60%) scale(.8);opacity:0}}
+@keyframes bob{50%{transform:translate(-50%,-5px)}}
+@keyframes popUp{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-110%) scale(1)}}
+
+.vh{position:fixed;left:-100px;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
+@media (prefers-reduced-motion:reduce){#game.shake,#game.shake-s{animation:none}}
+</style>
+</head>
+<body>
+
+<!-- ===== 로비 ===== -->
+<section id="lobby" class="screen active">
+  <header class="lobby-head">
+    <div class="logo" aria-hidden="true"><i style="background:var(--red);color:var(--red)"></i><i style="background:var(--yellow);color:var(--yellow)"></i><i style="background:var(--blue);color:var(--blue)"></i></div>
+    <h1>오피스 스트레스 룸</h1>
+    <p>회사에선 못 하는 것, 여기선 마음껏.</p>
+    <button class="icon-btn settings-btn" id="settingsBtn" aria-label="설정">⚙️</button>
+  </header>
+  <div class="today-chip" id="todayChip"></div>
+  <div class="room-list">
+    <button class="room-card brick" data-room="reject" style="--c:var(--red)">
+      <div class="rc-icon stampy">반려</div>
+      <div class="rc-text"><h2>반려의 방</h2><p>상사가 올린 결재, 전부 반려!</p><span class="rc-how">📳 도장 찍듯 쾅! 내려찍기</span></div>
+    </button>
+    <button class="room-card brick" data-room="shred" style="--c:var(--blue)">
+      <div class="rc-icon" style="color:var(--blue)">파쇄</div>
+      <div class="rc-text"><h2>업무 파쇄기</h2><p>쏟아지는 업무를 종이 국수로</p><span class="rc-how">📳 마구 흔들어 터보 가동</span></div>
+    </button>
+    <button class="room-card brick" data-room="resign" style="--c:var(--purple)">
+      <div class="rc-icon" style="color:var(--purple)">사직</div>
+      <div class="rc-text"><h2>사직서 던지기</h2><p>품어둔 사직서, 오늘은 던진다</p><span class="rc-how">📳 공 던지듯 휙!</span></div>
+    </button>
+  </div>
+  <button class="btn brick" id="calBtn" style="--c:var(--green)">📅 스트레스 캘린더</button>
+  <p class="foot">상사 이름과 기록은 이 폰에만 저장돼요.</p>
+</section>
+
+<!-- ===== 게임 ===== -->
+<section id="game" class="screen">
+  <div class="g-top">
+    <button class="icon-btn" id="exitBtn" aria-label="그만하기">✕</button>
+    <div class="g-title" id="gTitle"></div>
+    <span class="pill" id="gCount">0</span>
+    <span class="pill timer" id="gTimer">0:40</span>
+  </div>
+  <div class="g-progress"><i id="gProg"></i></div>
+  <div class="g-stage" id="stage"></div>
+  <div class="g-hint"><span id="gHintIcon">📳</span><span id="gHintText"></span><div class="meter" id="gMeter" title="움직임 세기"><i></i></div></div>
+  <div class="g-overlay" id="gOverlay"></div>
+  <div class="combo" id="combo"></div>
+</section>
+
+<!-- ===== 결과 ===== -->
+<section id="result" class="screen">
+  <div class="res-card">
+    <span class="res-room" id="resRoom"></span>
+    <h2 class="res-title" id="resTitle"></h2>
+    <div class="res-bricks" id="resBricks"></div>
+    <div class="res-scale"><span>0%</span><span>50%</span><span>100%</span></div>
+    <p class="res-stat" id="resStat"></p>
+    <p class="res-comfort" id="resComfort"></p>
+  </div>
+  <div class="res-actions">
+    <button class="btn brick nostud" id="againBtn" style="--c:var(--ink)">한 번 더</button>
+    <button class="btn ghost" id="homeBtn">다른 방 가기</button>
+    <button class="btn brick nostud wide" id="resCalBtn" style="--c:var(--green)">📅 스트레스 캘린더 보기</button>
+  </div>
+</section>
+
+<!-- ===== 캘린더 ===== -->
+<section id="calendar" class="screen">
+  <div class="cal-wrap">
+    <div class="cal-top"><button class="icon-btn" id="calBack" aria-label="뒤로">←</button><h2>스트레스 캘린더</h2></div>
+    <div class="cal-nav"><button id="calPrev" aria-label="이전 달">◀</button><h3 id="calMonth"></h3><button id="calNext" aria-label="다음 달">▶</button></div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--lv1)"></i>0–29 괜찮음</span>
+      <span><i class="dot" style="background:var(--lv2)"></i>30–59 지침</span>
+      <span><i class="dot" style="background:var(--lv3)"></i>60–84 많이 참음</span>
+      <span><i class="dot" style="background:var(--lv4)"></i>85+ 한계</span>
+    </div>
+    <div class="cal-sum" id="calSum"></div>
+  </div>
+</section>
+
+<div class="modal-bg" id="modalBg"><div class="modal" id="modal" role="dialog" aria-modal="true"></div></div>
+<label class="vh" id="hapticLabel" aria-hidden="true"><input type="checkbox" switch tabindex="-1"></label>
+
+<script>
+(() => {
+'use strict';
+/* ================= 유틸 ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const rand = (a, b) => a + Math.random() * (b - a);
+const pick = (a) => a[Math.floor(Math.random() * a.length)];
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pad = (n) => String(n).padStart(2, '0');
+const dayKey = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const params = new URLSearchParams(location.search);
+const DEBUG_DUR = Number(params.get('t')) || 0; // ?t=8 → 8초 테스트
+
+/* ================= 저장 ================= */
+const KEY = 'office-stress-room.v1';
+const Store = {
+  data: { settings: { boss: '', sens: 1, sound: true }, resignMsg: '', sessions: [] },
+  load() {
+    try {
+      const d = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (d) this.data = { ...this.data, ...d, settings: { ...this.data.settings, ...(d.settings || {}) }, sessions: Array.isArray(d.sessions) ? d.sessions : [] };
+    } catch (e) { /* 저장소를 못 쓰는 환경 */ }
+  },
+  save() { try { localStorage.setItem(KEY, JSON.stringify(this.data)); } catch (e) { /* noop */ } },
+  get boss() { return (this.data.settings.boss || '').trim() || '김부장'; },
+};
+Store.load();
+
+/* ================= 사운드 (Web Audio 합성) ================= */
+const Sound = {
+  ctx: null, master: null, buf: null, motor: null,
+  unlock() {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    if (!this.ctx) {
+      this.ctx = new AC();
+      this.master = this.ctx.createGain(); this.master.gain.value = 0.9; this.master.connect(this.ctx.destination);
+      const len = this.ctx.sampleRate; const b = this.ctx.createBuffer(1, len, this.ctx.sampleRate); const d = b.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      this.buf = b;
+    }
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+  },
+  get ok() { return !!(this.ctx && Store.data.settings.sound); },
+  noise(dur, o = {}) {
+    if (!this.ok) return;
+    const c = this.ctx, t = c.currentTime + (o.delay || 0);
+    const s = c.createBufferSource(); s.buffer = this.buf;
+    const f = c.createBiquadFilter(); f.type = o.type || 'lowpass'; f.frequency.setValueAtTime(o.freq || 1000, t); f.Q.value = o.q || 1;
+    if (o.freqEnd) f.frequency.exponentialRampToValueAtTime(o.freqEnd, t + dur);
+    const g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(o.gain || 0.4, t + (o.attack || 0.003)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(f).connect(g).connect(this.master); s.start(t, Math.random() * 0.5); s.stop(t + dur + 0.05);
+  },
+  tone(f0, f1, dur, o = {}) {
+    if (!this.ok) return;
+    const c = this.ctx, t = c.currentTime + (o.delay || 0);
+    const osc = c.createOscillator(); osc.type = o.type || 'sine'; osc.frequency.setValueAtTime(f0, t); osc.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    const g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(o.gain || 0.3, t + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    osc.connect(g).connect(this.master); osc.start(t); osc.stop(t + dur + 0.05);
+  },
+  stamp(i) { this.noise(0.09, { freq: 450, gain: 0.5 + i * 0.4 }); this.tone(120, 42, 0.2, { gain: 0.55 + i * 0.35 }); this.noise(0.04, { type: 'highpass', freq: 3500, gain: 0.12 }); },
+  paper() { this.noise(0.28, { type: 'bandpass', freq: 2200, freqEnd: 700, q: 0.7, gain: 0.22, attack: 0.05 }); },
+  shred(p) { for (let k = 0; k < 7; k++) this.noise(0.05, { type: 'bandpass', freq: 1500 + Math.random() * 1500, q: 2, gain: 0.25 + p * 0.15, delay: k * 0.045 }); },
+  whoosh() { this.noise(0.35, { type: 'bandpass', freq: 400, freqEnd: 2600, q: 1.2, gain: 0.3, attack: 0.08 }); },
+  land(tier) {
+    if (tier === 3) { this.tone(140, 38, 0.4, { gain: 0.8 }); this.noise(0.3, { freq: 900, gain: 0.7 }); this.noise(0.15, { type: 'highpass', freq: 2500, gain: 0.25, delay: 0.03 }); }
+    else if (tier === 2) { this.tone(200, 80, 0.15, { gain: 0.45 }); this.noise(0.08, { freq: 1500, gain: 0.35 }); }
+    else { this.noise(0.06, { freq: 1200, gain: 0.25 }); }
+  },
+  tick() { this.tone(900, 880, 0.06, { type: 'square', gain: 0.08 }); },
+  go() { this.tone(660, 1320, 0.25, { type: 'triangle', gain: 0.25 }); },
+  end() { [523, 659, 784, 1047].forEach((f, i) => this.tone(f, f, 0.35, { type: 'triangle', gain: 0.18, delay: i * 0.09 })); },
+  motorSet(p) {
+    if (!this.ok) { this.motorStop(); return; }
+    const c = this.ctx;
+    if (!this.motor) {
+      const o = c.createOscillator(); o.type = 'sawtooth';
+      const f = c.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 600;
+      const g = c.createGain(); g.gain.value = 0;
+      o.connect(f).connect(g).connect(this.master); o.start();
+      this.motor = { o, f, g };
+    }
+    const t = c.currentTime;
+    this.motor.o.frequency.setTargetAtTime(55 + p * 95, t, 0.05);
+    this.motor.f.frequency.setTargetAtTime(400 + p * 1400, t, 0.05);
+    this.motor.g.gain.setTargetAtTime(p > 0.03 ? 0.03 + p * 0.09 : 0, t, 0.06);
+  },
+  motorStop() { if (this.motor) { try { this.motor.o.stop(); } catch (e) { /* noop */ } this.motor = null; } },
+};
+
+/* ================= 진동 ================= */
+const hapticLabel = $('#hapticLabel');
+function haptic(ms = 25) {
+  if (navigator.vibrate) { try { navigator.vibrate(ms); } catch (e) { /* noop */ } }
+  else hapticLabel.click(); // iOS 18+ Safari: switch 토글 햅틱
+}
+
+/* ================= 모션 센서 ================= */
+const Motion = {
+  enabled: false, receiving: false, mag: 0, rot: 0, listeners: new Set(), grav: null, bound: false,
+  async request() {
+    if (!('DeviceMotionEvent' in window)) return (this.enabled = false);
+    // iOS 는 'granted'/'denied', 최신 크롬은 'prompt' 를 돌려주기도 해서 명시적 거부만 막아요.
+    let r = 'granted';
+    try {
+      if (typeof DeviceMotionEvent.requestPermission === 'function') r = await DeviceMotionEvent.requestPermission();
+    } catch (e) { r = 'error'; }
+    if (!this.bound) { this.bound = true; window.addEventListener('devicemotion', (e) => this.handle(e)); }
+    return (this.enabled = r !== 'denied');
+  },
+  handle(e) {
+    let x, y, z;
+    const a = e.acceleration;
+    if (a && a.x != null) { x = a.x; y = a.y; z = a.z; }
+    else {
+      const g = e.accelerationIncludingGravity; if (!g || g.x == null) return;
+      if (!this.grav) this.grav = { x: g.x, y: g.y, z: g.z };
+      const k = 0.88; this.grav.x = k * this.grav.x + (1 - k) * g.x; this.grav.y = k * this.grav.y + (1 - k) * g.y; this.grav.z = k * this.grav.z + (1 - k) * g.z;
+      x = g.x - this.grav.x; y = g.y - this.grav.y; z = g.z - this.grav.z;
+    }
+    const r = e.rotationRate || {};
+    const mag = Math.hypot(x, y, z), rot = Math.hypot(r.alpha || 0, r.beta || 0, r.gamma || 0);
+    if (mag > 0.05 || rot > 0.5) this.receiving = true;
+    this.mag = mag; this.rot = rot;
+    const s = { x, y, z, mag, rot, t: performance.now() };
+    this.listeners.forEach((fn) => fn(s));
+  },
+  on(fn) { this.listeners.add(fn); return () => this.listeners.delete(fn); },
+};
+const sensMult = () => [0.7, 1, 1.35][Store.data.settings.sens] ?? 1;
+// 짧은 순간의 충격(내려찍기·던지기) 감지기
+function peakDetector({ threshold, cooldown, win = 110, onPeak }) {
+  let armed = false, peak = 0, peakRot = 0, start = 0, last = -1e9;
+  return (s) => {
+    const th = threshold * sensMult();
+    if (!armed) {
+      if (s.mag > th && s.t - last > cooldown) { armed = true; peak = s.mag; peakRot = s.rot; start = s.t; }
+      return;
+    }
+    peak = Math.max(peak, s.mag); peakRot = Math.max(peakRot, s.rot);
+    if (s.t - start >= win) { armed = false; last = s.t; onPeak({ peak, rot: peakRot, intensity: clamp((peak - th) / (th * 1.4), 0, 1) }); }
+  };
+}
+
+/* ================= 문구 ================= */
+const COMFORT = [
+  { max: 29, lines: ['오늘은 비교적 잔잔하게 지나갔네요. 이런 날이 조금씩 더 많아지길 바라요.', '생각보다 잘 버틴 하루예요. 남은 저녁은 온전히 당신 거예요.', '큰 파도 없이 지나간 하루. 그것만으로도 꽤 괜찮은 날이에요.'] },
+  { max: 59, lines: ['적당히 지치는 하루였군요. 따뜻한 물로 씻고, 좋아하는 거 딱 하나만 하고 쉬어요.', '여기저기 신경 쓸 게 많았죠. 오늘 몫은 충분히 해냈어요.', '조금 피곤한 하루였네요. 오늘은 휴대폰 알림 끄고 일찍 누워도 괜찮아요.'] },
+  { max: 84, lines: ['꽤 많이 참았던 하루네요. 티 안 내고 버틴 거, 여기선 다 알아요.', '오늘 정말 애썼어요. 일은 회사에 두고 오고, 마음만 데리고 집에 가요.', '속으로 몇 번이나 삼켰을까요. 오늘 할 일은 이걸로 끝이에요.'] },
+  { max: 100, lines: ['정말… 고생 많았어요. 오늘 일은 당신 탓이 아니에요. 휴대폰 내려놓고 푹 자요.', '한계까지 버틴 하루였네요. 내일 일은 내일의 당신이 알아서 할 거예요. 오늘은 그냥 쉬어요.', '이만큼 쌓이도록 혼자 견뎠군요. 맛있는 거 먹고, 오늘만큼은 아무것도 하지 않아도 돼요.'] },
+];
+const levelOf = (p) => (p < 30 ? 1 : p < 60 ? 2 : p < 85 ? 3 : 4);
+
+/* ================= 게임 진행 ================= */
+const stage = $('#stage');
+const Game = {
+  room: null, running: false, duration: 40, timeLeft: 40, energy: 0, count: 0, best: 0,
+  timers: [], unsubs: [], raf: 0, lastT: 0, comboN: 0, comboT: 0, wake: null, noMotionTimer: 0,
+  later(fn, ms) { const id = setTimeout(fn, ms); this.timers.push(id); return id; },
+  every(fn, ms) { const id = setInterval(fn, ms); this.timers.push(id); return id; },
+  async start(roomId) {
+    const room = ROOMS[roomId];
+    this.room = room; this.running = false; this.energy = 0; this.count = 0; this.best = 0; this.comboN = 0;
+    this.duration = DEBUG_DUR || room.duration; this.timeLeft = this.duration;
+    show('game');
+    $('#gTitle').textContent = room.title;
+    $('#gCount').textContent = `${room.unit} 0`;
+    $('#gTimer').textContent = fmt(this.timeLeft); $('#gTimer').classList.remove('hurry');
+    $('#gProg').style.transform = 'scaleX(1)';
+    stage.innerHTML = '';
+    room.mount(stage);
+    this.setHint();
+    this.unsubs.push(Motion.on((s) => { if (this.running && room.onMotion) room.onMotion(s); }));
+    this.lastT = performance.now();
+    cancelAnimationFrame(this.raf);
+    this.raf = requestAnimationFrame((t) => this.loop(t));
+    try { this.wake = await navigator.wakeLock?.request('screen'); } catch (e) { this.wake = null; }
+    // 모션 이벤트가 오지 않으면 터치 모드로 안내
+    this.noMotionTimer = this.later(() => this.setHint(), 1600);
+    await this.countdown();
+    if (this.room !== room) return;
+    this.running = true;
+  },
+  setHint() {
+    const r = this.room; const motion = Motion.enabled && Motion.receiving;
+    $('#gHintIcon').textContent = motion ? '📳' : '👆';
+    $('#gHintText').innerHTML = motion ? r.hintMotion : `${r.hintTouch}<br><small style="color:var(--ink2)">${Motion.enabled ? '모션이 감지되지 않아 터치 모드로 해요' : '모션 센서를 쓸 수 없어 터치 모드로 해요'}</small>`;
+    $('#gMeter').style.display = motion ? '' : 'none';
+  },
+  countdown() {
+    return new Promise((res) => {
+      const ov = $('#gOverlay'); ov.classList.add('show');
+      const seq = ['3', '2', '1', '시작!'];
+      seq.forEach((s, i) => this.later(() => {
+        ov.innerHTML = `<div class="big">${s}</div>`;
+        if (i < 3) Sound.tick(); else Sound.go();
+      }, i * 620));
+      this.later(() => { ov.classList.remove('show'); ov.innerHTML = ''; res(); }, seq.length * 620);
+    });
+  },
+  loop(t) {
+    const dt = Math.min(0.05, (t - this.lastT) / 1000); this.lastT = t;
+    if (this.running) {
+      const prev = Math.ceil(this.timeLeft);
+      this.timeLeft = Math.max(0, this.timeLeft - dt);
+      const now = Math.ceil(this.timeLeft);
+      $('#gTimer').textContent = fmt(now);
+      $('#gProg').style.transform = `scaleX(${this.timeLeft / this.duration})`;
+      if (now <= 5 && now !== prev && now > 0) { $('#gTimer').classList.add('hurry'); Sound.tick(); }
+      if (this.room.tick) this.room.tick(dt);
+      if (this.timeLeft <= 0) { this.finish(); return; }
+    }
+    $('#gMeter i').style.width = `${clamp(Motion.mag / (22 * sensMult()), 0, 1) * 100}%`;
+    $('#gMeter i').style.background = Motion.mag > 13 * sensMult() ? 'var(--red)' : 'var(--green)';
+    this.raf = requestAnimationFrame((tt) => this.loop(tt));
+  },
+  score(energy, label) {
+    this.energy += energy; this.count++;
+    $('#gCount').textContent = `${this.room.unit} ${this.count}`;
+    const now = performance.now();
+    this.comboN = now - this.comboT < 1300 ? this.comboN + 1 : 1; this.comboT = now;
+    if (this.comboN >= 3 || label) {
+      const c = $('#combo'); c.textContent = label || `COMBO ×${this.comboN}`;
+      c.classList.remove('show'); void c.offsetWidth; c.classList.add('show');
+    }
+  },
+  shake(strong) { const g = $('#game'); const c = strong ? 'shake' : 'shake-s'; g.classList.remove('shake', 'shake-s'); void g.offsetWidth; g.classList.add(c); },
+  cleanup() {
+    this.running = false;
+    this.timers.forEach((id) => { clearTimeout(id); clearInterval(id); }); this.timers = [];
+    this.unsubs.forEach((u) => u()); this.unsubs = [];
+    cancelAnimationFrame(this.raf);
+    if (this.room && this.room.unmount) this.room.unmount();
+    Sound.motorStop();
+    try { this.wake && this.wake.release(); } catch (e) { /* noop */ } this.wake = null;
+    $('#gOverlay').classList.remove('show'); $('#gOverlay').innerHTML = '';
+  },
+  finish() {
+    const room = this.room;
+    this.running = false;
+    if (room.onEnd) room.onEnd();
+    Sound.motorStop(); Sound.end(); haptic(60);
+    const ov = $('#gOverlay'); ov.innerHTML = '<div class="endmark">퇴근!</div>'; ov.classList.add('show');
+    this.later(() => { const res = this.makeResult(); this.cleanup(); showResult(res); }, 1300);
+  },
+  quit() {
+    if (!this.room) return show('lobby');
+    if (this.count > 0) {
+      if (this.running) this.finish();
+      return;
+    }
+    this.cleanup(); this.room = null; show('lobby'); renderLobby();
+  },
+  makeResult() {
+    const room = this.room;
+    const stress = this.count ? clamp(Math.round(100 * (1 - Math.exp(-this.energy / room.K))), 3, 99) : 0;
+    const res = { ts: Date.now(), day: dayKey(), room: room.id, stress, count: this.count, best: Math.round(this.best * 100) };
+    if (this.count) { Store.data.sessions.push(res); Store.save(); }
+    return res;
+  },
+};
+const fmt = (s) => `0:${pad(Math.max(0, Math.ceil(s)))}`;
+
+/* ================= 방 공통: 상사 캐릭터 ================= */
+function bossHTML(name) {
+  return `<div class="bubble"></div>
+  <div class="fig"><div class="fig-hair"></div>
+    <div class="fig-head"><i class="brow l"></i><i class="brow r"></i><i class="eye l"></i><i class="eye r"></i><i class="mouth"></i><i class="sweat"></i></div>
+    <div class="fig-body"><i></i></div></div>
+  <div class="nameplate">${esc(name)}</div>`;
+}
+function bossReact(wrap, line, mood = 'shock', jump = false) {
+  const fig = $('.fig', wrap), b = $('.bubble', wrap);
+  fig.classList.remove('shock', 'sad', 'jump'); void fig.offsetWidth;
+  fig.classList.add(mood); if (jump) fig.classList.add('jump');
+  clearTimeout(fig._t); fig._t = setTimeout(() => fig.classList.remove('shock', 'sad', 'jump'), 900);
+  if (line) { b.textContent = line; b.classList.remove('show'); void b.offsetWidth; b.classList.add('show'); }
+}
+function pop(parent, x, y, text, size, color) {
+  const p = el('div', 'pop'); p.textContent = text;
+  p.style.cssText = `left:${x}px;top:${y}px;font-size:${size}px;color:${color}`;
+  parent.appendChild(p); setTimeout(() => p.remove(), 850);
+}
+// 터치 플릭(빠르게 밀기) 추적기
+function flickTracker(target, { onMove, onEnd, onTap }) {
+  let pts = null, id = null;
+  const down = (e) => { if (!Game.running) return; id = e.pointerId; target.setPointerCapture?.(id); pts = [{ x: e.clientX, y: e.clientY, t: performance.now() }]; e.preventDefault(); };
+  const move = (e) => {
+    if (!pts || e.pointerId !== id) return;
+    pts.push({ x: e.clientX, y: e.clientY, t: performance.now() }); if (pts.length > 12) pts.shift();
+    onMove && onMove(e.clientX - pts0.x, e.clientY - pts0.y);
+  };
+  let pts0 = null;
+  const down2 = (e) => { down(e); pts0 = pts && pts[0]; };
+  const up = (e) => {
+    if (!pts || e.pointerId !== id) return;
+    const last = { x: e.clientX, y: e.clientY, t: performance.now() };
+    const first = pts0; const recent = pts.find((p) => last.t - p.t < 90) || pts[pts.length - 1];
+    const dt = Math.max(16, last.t - recent.t);
+    const vx = (last.x - recent.x) / dt, vy = (last.y - recent.y) / dt;
+    const dx = last.x - first.x, dy = last.y - first.y;
+    pts = null;
+    if (Math.hypot(dx, dy) < 10 && onTap) onTap(e); else onEnd && onEnd({ dx, dy, vx, vy });
+  };
+  target.addEventListener('pointerdown', down2);
+  target.addEventListener('pointermove', move);
+  target.addEventListener('pointerup', up);
+  target.addEventListener('pointercancel', () => { if (pts) { pts = null; onEnd && onEnd({ dx: 0, dy: 0, vx: 0, vy: 0 }); } });
+}
+
+/* ================= 방 1: 반려의 방 ================= */
+const DOC_TITLES = ['주말 워크숍 기획안 (전원 필참)', '퇴근 30분 전 긴급 회의 소집', '보고서 양식 개선을 위한 보고서', '연차 사용 자제 협조 요청', '회식 2차·3차 동선 계획',
+  'PPT 폰트 전면 재수정 건', '어제 말한 거 오늘 오전까지', '주간보고의 일일보고 전환 건', '금요일 18시 업무 공유회', '신년 장기자랑 참가 신청서',
+  '엑셀 셀 색깔 통일 지침', '아침 회의 7시 30분 변경 건', '휴가 중 메신저 상시 확인 요청', '"간단한" 자료 50장 작성 요청', '갑자기 생각난 신규 프로젝트',
+  '결재 라인 3단계 추가 건', '보고서 첫 버전으로 원복 요청', '"그냥 한번 해봐" 기획안', '단톡방 공지 실시간 응답 의무화', '최종_진짜최종_v7.pptx 재검토',
+  '점심시간 업무 효율화 방안', '내일 출근 1시간 앞당기기', '퇴근 후 전화 상시 대기 지침', '야근 식대 절감 방안'];
+const BOSS_LINES_R = ['아니 이걸 왜…', '다시 올릴게…', '이것도?!', '검토라도… 좀…', '헉', '반려라니…', '다음 건은 괜찮을 거야', '내가 뭘 잘못했지…', '흐음…?!', '😰', '…네.'];
+const Reject = {
+  id: 'reject', title: '반려의 방', unit: '반려', duration: 40, K: 60, color: 'var(--red)',
+  hintMotion: '폰을 <b>도장처럼</b> 쥐고 아래로 <b>쾅!</b> 내려찍어요', hintTouch: '서류를 <b>탭</b>해서 반려 도장을 찍어요',
+  intro() {
+    return {
+      lead: `${esc(Store.boss)}님이 끝도 없이 결재를 올립니다. 오늘은 전부 반려해 버리세요!`,
+      how: [['📳', '폰을 도장처럼 쥐고 <b>아래로 쾅!</b> 내려찍기'], ['👆', '또는 서류를 <b>탭</b>해도 돼요'], ['⚡', '빠르게 연속으로 찍으면 콤보!']],
+      fields: `<label class="field"><span>반려를 왕창 준 상사 이름</span><input id="bossInput" maxlength="12" placeholder="예: 김부장" value="${esc(Store.data.settings.boss)}"><small>결재 문서의 기안자로 들어가요. 이 폰에만 저장돼요.</small></label>`,
+      before() { const v = $('#bossInput').value.trim(); Store.data.settings.boss = v; Store.save(); },
+    };
+  },
+  mount(st) {
+    this.busy = false; this.pileN = 0;
+    const r = el('div', 'r1');
+    r.innerHTML = `<div class="win"></div><div class="clock"></div>
+      <div class="boss-wrap">${bossHTML(Store.boss)}</div>
+      <div class="doc-slot"></div>
+      <div class="reject-pile"><div class="pile"><div class="tray"></div></div><span class="pile-label">반려함 0</span></div>`;
+    st.appendChild(r);
+    this.root = r; this.slot = $('.doc-slot', r); this.boss = $('.boss-wrap', r);
+    this.detector = peakDetector({ threshold: 13, cooldown: 280, win: 90, onPeak: (p) => this.stamp(p.intensity, true) });
+    this.newDoc();
+  },
+  newDoc() {
+    const d = el('div', 'doc enter');
+    const lines = Array.from({ length: 8 }, () => `<i style="width:${rand(55, 100)}%"></i>`).join('');
+    d.innerHTML = `<div class="doc-head"><h4>결재 요청서</h4>
+      <table class="sign"><tr><th>기안</th><th>검토</th><th>나</th></tr><tr><td><span class="mini-seal">${esc(Store.boss.slice(0, 3))}</span></td><td></td><td></td></tr></table></div>
+      <div class="doc-title">${esc(pick(DOC_TITLES))}</div>
+      <div class="doc-meta"><span>기안자: ${esc(Store.boss)}</span><span>긴급도 ${'★'.repeat(Math.ceil(rand(3, 5)))}</span></div>
+      <div class="doc-lines">${lines}</div>`;
+    d.addEventListener('pointerdown', (e) => { e.preventDefault(); if (Game.running) this.stamp(0.35, false, e); });
+    this.slot.appendChild(d); this.doc = d;
+    Sound.paper();
+  },
+  onMotion(s) { this.detector(s); },
+  stamp(intensity, fromMotion, ev) {
+    if (!Game.running || this.busy || !this.doc) return;
+    this.busy = true;
+    const d = this.doc; d.classList.remove('enter'); d.classList.add('hit');
+    const rect = d.getBoundingClientRect();
+    let x = 50, y = 58;
+    if (ev && ev.clientX) { x = clamp(((ev.clientX - rect.left) / rect.width) * 100, 28, 72); y = clamp(((ev.clientY - rect.top) / rect.height) * 100, 30, 80); }
+    else { x = rand(38, 62); y = rand(48, 68); }
+    const s = 0.9 + intensity * 0.45;
+    const st = el('div', 'stamp', '반려');
+    st.style.setProperty('--r', `${rand(-20, 14)}deg`); st.style.setProperty('--s', s); st.style.setProperty('--x', `${x}%`); st.style.setProperty('--y', `${y}%`);
+    d.appendChild(st);
+    const splats = 2 + Math.round(intensity * 6);
+    for (let i = 0; i < splats; i++) {
+      const k = el('i', 'ink'); const sz = rand(3, 8 + intensity * 6);
+      k.style.cssText = `width:${sz}px;height:${sz}px;left:calc(${x}% + ${rand(-110, 110) * s}px);top:calc(${y}% + ${rand(-60, 60) * s}px)`;
+      d.appendChild(k);
+    }
+    Sound.stamp(intensity); haptic(fromMotion ? 40 : 25);
+    if (intensity > 0.6) Game.shake(intensity > 0.85); else Game.shake(false);
+    Game.best = Math.max(Game.best, intensity);
+    Game.score(1 + intensity * 1.5, intensity > 0.85 ? '쾅!! 강력 반려' : null);
+    if (Math.random() < 0.55) bossReact(this.boss, pick(BOSS_LINES_R), Math.random() < 0.5 ? 'shock' : 'sad', intensity > 0.7);
+    else bossReact(this.boss, null, 'shock');
+    Game.later(() => {
+      d.classList.remove('hit'); d.classList.add('out');
+      this.pileN++;
+      const pile = $('.pile', this.root);
+      if (this.pileN <= 9) { const sh = el('i', 'sheet'); sh.style.bottom = `${12 + this.pileN * 4}px`; sh.style.transform = `rotate(${rand(-6, 6)}deg)`; pile.appendChild(sh); }
+      $('.pile-label', this.root).textContent = `반려함 ${this.pileN}`;
+      Game.later(() => d.remove(), 360);
+      Game.later(() => { this.newDoc(); this.busy = false; }, 140);
+    }, 230);
+  },
+  stats(res) { return `${esc(Store.boss)}님의 결재 ${res.count}건, 전부 반려 완료.`; },
+};
+
+/* ================= 방 2: 업무 파쇄기 ================= */
+const TASKS = [['긴급', '{b}: 이거 오늘까지 되죠?'], ['ASAP', '엑셀 취합 부탁드려요 (시트 37개)'], ['재요청', '회의록 정리 + 액션아이템'], ['오늘까지', '주간보고 초안 올려주세요'],
+  ['긴급', '고객사 요청사항 전부 반영'], ['확인', '자료 출처 다시 확인 바람'], ['수정', '표 위치 왼쪽으로 1cm'], ['수정', '슬라이드 순서 다시 바꿔주세요'],
+  ['회신', '메일 회신 부탁드립니다 (3차)'], ['긴급', '1분만 시간 되세요?'], ['ASAP', '이것만 잠깐 봐줄래요?'], ['재요청', '버전 다시 올려주세요'],
+  ['공유', '전체 회신으로 공유 부탁'], ['확인', '숫자가 좀 이상한데요?'], ['오늘까지', '{b}: 내일 아침 보고용'], ['긴급', '{b}: 지금 자리에 있어요?'],
+  ['수정', '로고 좀 더 크게… 아니 작게'], ['ASAP', '갑자기 생긴 미팅 자료'], ['회신', '참조에 저도 넣어주세요'], ['오늘까지', '분기 실적 다시 뽑기']];
+const TAG_COLORS = { 긴급: 'var(--red)', ASAP: 'var(--orange)', 재요청: 'var(--purple)', 오늘까지: 'var(--red)', 확인: 'var(--blue)', 수정: 'var(--green)', 회신: 'var(--blue)', 공유: '#888' };
+const PAPER_COLORS = ['#ffffff', '#fffbe0', '#eef6ff', '#fff0f3', '#f0fff3'];
+const Shred = {
+  id: 'shred', title: '업무 파쇄기', unit: '파쇄', duration: 40, K: 55, color: 'var(--blue)',
+  hintMotion: '폰을 <b>마구 흔들면</b> 파쇄기 터보! 종이는 <b>아래로 쓸어</b> 넣어요', hintTouch: '종이를 <b>아래로 쓸거나 탭</b>하고, 파쇄기를 <b>연타</b>하면 터보',
+  intro() {
+    return {
+      lead: '오늘도 업무가 쏟아집니다. 하나도 남김없이 파쇄기에 갈아버리세요!',
+      how: [['📳', '폰을 <b>좌우로 마구 흔들면</b> 파쇄기 터보 가동 → 업무가 저절로 빨려 들어가요'], ['👆', '업무 종이를 <b>아래로 쓸어내리거나 탭</b>'], ['🔘', '파쇄기를 <b>연타</b>해도 터보가 차요']],
+      fields: '',
+    };
+  },
+  mount(st) {
+    this.power = 0; this.shakeE = 0; this.feedAcc = 0; this.spawnAcc = 0; this.elapsed = 0; this.z = 1; this.binN = 0;
+    const r = el('div', 'r2');
+    r.innerHTML = `<span class="pill pile-badge">쌓인 업무 <b>0</b></span>
+      <div class="inbox"></div>
+      <div class="shredder brick"><div class="slot"></div><div class="label">업무 파쇄기<small>SHRED-3000</small></div><div class="leds">${'<i></i>'.repeat(5)}</div><div class="turbo">TURBO!</div></div>
+      <div class="bin"><div class="bin-fill"></div></div>`;
+    st.appendChild(r);
+    this.root = r; this.inbox = $('.inbox', r); this.shredder = $('.shredder', r); this.leds = $$('.leds i', r); this.fill = $('.bin-fill', r);
+    this.shredder.addEventListener('pointerdown', (e) => { e.preventDefault(); if (!Game.running) return; this.power = Math.min(1, this.power + 0.2); haptic(10); });
+    for (let i = 0; i < 4; i++) this.spawn(true);
+  },
+  spawn(initial) {
+    const papers = $$('.task:not(.gone)', this.inbox);
+    if (papers.length >= 14) return;
+    const [tag, text] = pick(TASKS);
+    const p = el('div', 'task drop');
+    p.style.setProperty('--r', `${rand(-12, 12)}deg`); p.style.setProperty('--pc', pick(PAPER_COLORS)); p.style.setProperty('--tc', TAG_COLORS[tag] || 'var(--red)');
+    p.innerHTML = `<span class="tag">${tag}</span><p>${esc(text.replace('{b}', Store.boss))}</p>`;
+    const W = this.inbox.clientWidth, H = this.inbox.clientHeight;
+    const w = Math.min(W * 0.46, 180);
+    p.style.left = `${rand(8, Math.max(9, W - w - 8))}px`;
+    p.style.top = `${rand(10, Math.max(12, H - 90))}px`;
+    p.style.zIndex = this.z++;
+    this.inbox.appendChild(p);
+    let tx = 0, ty = 0;
+    flickTracker(p, {
+      onMove: (dx, dy) => { tx = dx; ty = dy; p.classList.remove('drop'); p.style.transform = `translate(${dx}px,${dy}px) rotate(var(--r))`; p.style.zIndex = this.z++; },
+      onEnd: ({ dy, vy }) => {
+        if (dy > 50 || vy > 0.45) this.shredPaper(p, tx, ty);
+        else { p.style.transition = 'transform .2s'; p.style.transform = ''; setTimeout(() => (p.style.transition = ''), 220); tx = ty = 0; }
+      },
+      onTap: () => this.shredPaper(p, 0, 0),
+    });
+    if (!initial) Sound.paper();
+    this.updateBadge();
+  },
+  updateBadge() { $('.pile-badge b', this.root).textContent = $$('.task:not(.gone)', this.inbox).length; },
+  shredPaper(p, tx, ty) {
+    if (!Game.running || p.classList.contains('gone')) return;
+    p.classList.add('gone'); p.classList.remove('drop'); p.style.zIndex = 50;
+    this.updateBadge();
+    const rr = this.root.getBoundingClientRect(), slot = $('.slot', this.shredder).getBoundingClientRect();
+    const left = p.offsetLeft, top = p.offsetTop, w = p.offsetWidth, h = p.offsetHeight;
+    const dx = slot.left + slot.width / 2 - rr.left - (left + w / 2), dy = slot.top - rr.top - (top + h) + 4;
+    const r = getComputedStyle(p).getPropertyValue('--r') || '0deg';
+    const speed = 1 - this.power * 0.55;
+    const a1 = p.animate([{ transform: `translate(${tx}px,${ty}px) rotate(${r})` }, { transform: `translate(${dx}px,${dy}px) rotate(0deg)` }], { duration: 200 * speed + 60, easing: 'ease-in', fill: 'forwards' });
+    a1.onfinish = () => {
+      const dur = 420 * speed + 120;
+      p.animate([{ transform: `translate(${dx}px,${dy}px)`, clipPath: 'inset(0 0 0 0)' }, { transform: `translate(${dx}px,${dy + h}px)`, clipPath: `inset(0 0 ${h}px 0)` }], { duration: dur, easing: 'linear', fill: 'forwards' }).onfinish = () => p.remove();
+      Sound.shred(this.power); haptic(30);
+      this.strips(p.style.getPropertyValue('--pc') || '#fff', dur);
+    };
+    const e = 1 + this.power * 1.2;
+    Game.best = Math.max(Game.best, this.power);
+    Game.score(e, this.power > 0.8 && Math.random() < 0.3 ? '와르르 파쇄!' : null);
+  },
+  strips(color, dur) {
+    const rr = this.root.getBoundingClientRect(), sh = this.shredder.getBoundingClientRect(), bin = $('.bin', this.root).getBoundingClientRect();
+    const startY = sh.bottom - rr.top - 6, endY = bin.bottom - rr.top - this.fill.offsetHeight - 14;
+    const x0 = sh.left - rr.left + sh.width * 0.18, span = sh.width * 0.64;
+    const colors = [color, color, '#fff', '#ffe58a', '#bcd6ff'];
+    for (let i = 0; i < 9; i++) {
+      const s = el('i', 'strip'); s.style.background = pick(colors); s.style.left = `${x0 + (span * i) / 8}px`; s.style.top = `${startY}px`;
+      s.style.boxShadow = '0 0 0 1px rgba(0,0,0,.06)';
+      this.root.appendChild(s);
+      const fall = Math.max(10, endY - startY), sway = rand(-26, 26);
+      s.animate([{ transform: 'translateY(-20px) scaleY(.2)', opacity: 1 }, { transform: `translate(${sway * 0.4}px,${fall * 0.4}px) rotate(${sway / 2}deg)`, offset: 0.4 },
+        { transform: `translate(${sway}px,${fall}px) rotate(${sway * 2}deg)`, opacity: 0.9 }], { duration: dur + rand(250, 600), delay: i * 18, easing: 'cubic-bezier(.4,.1,.8,.6)', fill: 'forwards' })
+        .onfinish = () => s.remove();
+    }
+    this.binN++;
+    Game.later(() => { this.fill.style.height = `${Math.min(92, this.binN * 2.4)}%`; }, dur + 300);
+  },
+  onMotion(s) {
+    const m = sensMult();
+    this.shakeE = this.shakeE * 0.86 + s.mag * 0.14;
+    const target = clamp((this.shakeE - 3.2 * m) / (9 * m), 0, 1);
+    if (target > this.power) this.power = target;
+  },
+  tick(dt) {
+    this.elapsed += dt;
+    this.power = Math.max(0, this.power - dt * 0.5);
+    Sound.motorSet(this.power);
+    const lit = Math.ceil(this.power * 5 - 0.15);
+    this.leds.forEach((l, i) => { l.className = i < lit ? (i >= 4 ? 'on max' : i >= 2 ? 'on hot' : 'on') : ''; });
+    $('.turbo', this.shredder).classList.toggle('on', this.power > 0.75);
+    const j = this.power * 3.2;
+    this.shredder.style.transform = `translateX(-50%) translate(${rand(-j, j)}px,${rand(-j, j) * 0.6}px)`;
+    // 새 업무 도착 (점점 빨라짐)
+    this.spawnAcc += dt;
+    const every = Math.max(0.45, 1.15 - this.elapsed * 0.02);
+    if (this.spawnAcc > every) { this.spawnAcc = 0; this.spawn(); }
+    // 터보면 자동으로 빨아들임
+    this.feedAcc += dt;
+    if (this.power > 0.3 && this.feedAcc > 0.7 - this.power * 0.48) {
+      const papers = $$('.task:not(.gone)', this.inbox);
+      if (papers.length) { this.feedAcc = 0; const top = papers.reduce((a, b) => (+a.style.zIndex > +b.style.zIndex ? a : b)); this.shredPaper(top, 0, 0); }
+    }
+  },
+  onEnd() { this.shredder.style.transform = 'translateX(-50%)'; },
+  unmount() { Sound.motorStop(); },
+  stats(res) { return `쏟아진 업무 ${res.count}건이 종이 국수가 되었어요.`; },
+};
+
+/* ================= 방 3: 사직서 던지기 ================= */
+const BOSS_LINES_T = ['헉!', '이게 뭐야?!', '자… 잠깐만!', '다시 생각해 봐…', '연봉 얘기 좀 할까?', '우리 대화로 풀자…', '커피 한 잔 할래…?', '이번 주만 버텨줘…', '내 책상이…!', '😱'];
+const Resign = {
+  id: 'resign', title: '사직서 던지기', unit: '투척', duration: 40, K: 40, color: 'var(--purple)',
+  hintMotion: '폰을 꽉 쥐고 <b>공 던지듯 앞으로 휙!</b> (놓치지 않게 조심)', hintTouch: '사직서를 <b>위로 휙</b> 밀어 올려 던져요',
+  intro() {
+    return {
+      lead: '가슴속에 품어둔 사직서, 오늘은 마음껏 던지세요. 세게 던질수록 책상이 들썩입니다.',
+      how: [['📳', '폰을 꽉 쥐고 <b>공 던지듯 앞으로 휙!</b>'], ['👆', '또는 사직서를 <b>위로 빠르게 밀어 올리기</b>'], ['💥', '파워가 셀수록 쾅!! (진짜로 놓치면 안 돼요)']],
+      fields: `<label class="field"><span>사직서에 쓸 한마디 (선택)</span><input id="resignInput" maxlength="24" placeholder="예: 이제 그만하겠습니다" value="${esc(Store.data.resignMsg)}"></label>`,
+      before() { Store.data.resignMsg = $('#resignInput').value.trim(); Store.save(); },
+    };
+  },
+  mount(st) {
+    this.busy = false; this.landedN = 0;
+    const r = el('div', 'r3');
+    const msg = Store.data.resignMsg || '일신상의 사유로 퇴사하고자 합니다';
+    r.innerHTML = `<div class="win"></div><div class="frame">이달의<br>사원</div>
+      <div class="target"><div class="boss-wrap">${bossHTML(Store.boss)}</div>
+        <div class="desk3"><div class="desk-top"></div><div class="landed"></div><div class="desk-front"><span class="nameplate">${esc(Store.boss)}</span></div></div></div>
+      <div class="aim">↑ 휙!</div>
+      <div class="holder"><div class="env rise"><b>사직서</b><small>“${esc(msg)}”</small><span class="seal">印</span></div></div>`;
+    st.appendChild(r);
+    this.root = r; this.env = $('.holder .env', r); this.boss = $('.boss-wrap', r); this.landed = $('.landed', r); this.desk = $('.desk3', r);
+    $('.boss-wrap .nameplate', r).remove(); // 책상 명패로 대체
+    this.detector = peakDetector({ threshold: 15, cooldown: 650, win: 130, onPeak: (p) => this.throwIt(clamp(p.intensity * 0.85 + clamp(p.rot / 900, 0, 1) * 0.25, 0.08, 1), true) });
+    flickTracker($('.holder', r), {
+      onMove: (dx, dy) => { if (!this.busy) this.env.style.transform = `translate(${dx * 0.25}px,${Math.min(0, dy) * 0.35}px) rotate(${dx * 0.05}deg)`; },
+      onEnd: ({ dy, vy }) => {
+        if (dy < -45 || vy < -0.6) this.throwIt(clamp((-vy - 0.3) / 2.2, 0.08, 1), false);
+        else { this.env.style.transition = 'transform .2s'; this.env.style.transform = ''; setTimeout(() => (this.env.style.transition = ''), 220); }
+      },
+      onTap: () => {},
+    });
+  },
+  onMotion(s) { this.detector(s); },
+  throwIt(power, fromMotion) {
+    if (!Game.running || this.busy) return;
+    this.busy = true;
+    const env = this.env; env.classList.remove('rise');
+    const tier = power < 0.33 ? 1 : power < 0.7 ? 2 : 3;
+    const rr = this.root.getBoundingClientRect(), er = env.getBoundingClientRect(), lr = this.landed.getBoundingClientRect();
+    const lx = rand(0.18, 0.82), ly = tier === 1 ? rand(0.65, 0.9) : rand(0.2, 0.75);
+    const tx = lr.left + lr.width * lx, ty = lr.top + lr.height * ly;
+    const dx = tx - (er.left + er.width / 2), dy = ty - (er.top + er.height / 2);
+    const cur = env.style.transform || 'translate(0,0)';
+    const spin = rand(300, 620) * (Math.random() < 0.5 ? -1 : 1);
+    const endScale = 30 / er.width;
+    Sound.whoosh(); haptic(fromMotion ? 20 : 12);
+    env.style.transform = '';
+    const a = env.animate([
+      { transform: cur },
+      { transform: `translate(${dx * 0.55}px,${dy * 0.7 - 70 - power * 60}px) scale(${0.55}) rotate(${spin * 0.55}deg)`, offset: 0.55 },
+      { transform: `translate(${dx}px,${dy}px) scale(${endScale}) rotate(${spin}deg)` },
+    ], { duration: 560 - power * 160, easing: 'cubic-bezier(.3,.6,.6,1)', fill: 'forwards' });
+    a.onfinish = () => {
+      a.cancel(); env.style.opacity = '0';
+      const lnd = el('i', 'env'); lnd.style.left = `${lx * 100}%`; lnd.style.top = `${ly * 100}%`; lnd.style.setProperty('--r', `${rand(-40, 40)}deg`);
+      this.landed.appendChild(lnd); this.landedN++;
+      if (this.landed.children.length > 16) this.landed.firstElementChild.remove();
+      this.impact(tier, power, tx - rr.left, ty - rr.top);
+      Game.later(() => { env.style.opacity = ''; env.classList.remove('rise'); void env.offsetWidth; env.classList.add('rise'); this.busy = false; }, 320);
+    };
+  },
+  impact(tier, power, x, y) {
+    Sound.land(tier);
+    Game.best = Math.max(Game.best, power);
+    const pts = Math.round(power * 100);
+    if (tier === 3) {
+      haptic(90); Game.shake(true);
+      this.desk.classList.remove('bump'); void this.desk.offsetWidth; this.desk.classList.add('bump');
+      bossReact(this.boss, pick(BOSS_LINES_T), 'shock', true);
+      pop(this.root, x, y - 40, '쾅!!', 54, 'var(--red)');
+      for (let i = 0; i < 8; i++) {
+        const f = el('i', 'flyer'); f.style.left = `${x}px`; f.style.top = `${y}px`; this.root.appendChild(f);
+        const ang = rand(-Math.PI, 0), dist = rand(60, 140);
+        f.animate([{ transform: 'translate(0,0) rotate(0)', opacity: 1 }, { transform: `translate(${Math.cos(ang) * dist}px,${Math.sin(ang) * dist}px) rotate(${rand(-200, 200)}deg)`, opacity: 1, offset: 0.5 },
+          { transform: `translate(${Math.cos(ang) * dist * 1.3}px,${Math.sin(ang) * dist + 120}px) rotate(${rand(-400, 400)}deg)`, opacity: 0 }], { duration: 900, easing: 'ease-out' }).onfinish = () => f.remove();
+      }
+    } else if (tier === 2) {
+      haptic(45); Game.shake(false);
+      this.desk.classList.remove('bump'); void this.desk.offsetWidth; this.desk.classList.add('bump');
+      if (Math.random() < 0.6) bossReact(this.boss, pick(BOSS_LINES_T), 'shock'); else bossReact(this.boss, null, 'shock');
+      pop(this.root, x, y - 30, '착!', 40, 'var(--orange)');
+    } else {
+      haptic(15);
+      bossReact(this.boss, Math.random() < 0.4 ? '…응?' : null, 'sad');
+      pop(this.root, x, y - 24, '툭', 30, 'var(--ink2)');
+    }
+    Game.score(1 + power * 2, `파워 ${pts}`);
+  },
+  stats(res) { return `사직서 ${res.count}장 투척! 최고 파워 ${res.best}점. 마음속으론 이미 퇴사 완료.`; },
+};
+
+const ROOMS = { reject: Reject, shred: Shred, resign: Resign };
+
+/* ================= 화면 전환 ================= */
+function show(id) { $$('.screen').forEach((s) => s.classList.toggle('active', s.id === id)); }
+
+/* ----- 로비 ----- */
+function dayStats(key) {
+  const list = Store.data.sessions.filter((s) => s.day === key);
+  return list.length ? { max: Math.max(...list.map((s) => s.stress)), n: list.length, list } : null;
+}
+function renderLobby() {
+  const t = dayStats(dayKey());
+  const chip = $('#todayChip');
+  chip.innerHTML = t
+    ? `<i class="dot" style="background:var(--lv${levelOf(t.max)})"></i>오늘의 스트레스 <b>${t.max}%</b> · ${t.n}번 풀었어요`
+    : '☕ 오늘은 아직 기록이 없어요';
+}
+
+/* ----- 모달 ----- */
+const modalBg = $('#modalBg'), modal = $('#modal');
+function openModal(html) { modal.innerHTML = html; modalBg.classList.add('show'); }
+function closeModal() { modalBg.classList.remove('show'); }
+modalBg.addEventListener('click', (e) => { if (e.target === modalBg) closeModal(); });
+
+function openIntro(roomId) {
+  const room = ROOMS[roomId]; const it = room.intro();
+  openModal(`<h3>${room.title}</h3><p class="lead">${it.lead}</p>
+    <ul class="how">${it.how.map(([i, t]) => `<li><span>${i}</span><span>${t}</span></li>`).join('')}</ul>
+    ${it.fields}
+    <div class="safety">⚠️ <b>폰을 꽉 쥐세요!</b> 손목 스트랩이 있으면 더 좋아요. 주변에 사람·물건이 없는지 확인하고, 세게 안 휘둘러도 충분히 인식돼요.</div>
+    <div class="modal-actions"><button class="btn ghost" id="introCancel">취소</button><button class="btn brick nostud" id="introGo" style="--c:${room.color}">시작하기</button></div>`);
+  $('#introCancel').onclick = closeModal;
+  $('#introGo').onclick = async () => {
+    if (it.before) it.before();
+    Sound.unlock();
+    await Motion.request(); // iOS: 반드시 탭 직후에 권한 요청
+    closeModal();
+    Game.start(roomId);
+  };
+}
+
+function openSettings() {
+  const s = Store.data.settings;
+  openModal(`<h3>설정</h3>
+    <label class="field"><span>상사 이름</span><input id="setBoss" maxlength="12" placeholder="예: 김부장" value="${esc(s.boss)}"></label>
+    <div class="field"><span>모션 감도</span><div class="seg" id="setSens">${['예민하게', '보통', '둔하게'].map((l, i) => `<button data-v="${i}" class="${s.sens === i ? 'on' : ''}">${l}</button>`).join('')}</div>
+      <small>살짝만 움직여도 인식되면 '둔하게', 세게 해도 안 되면 '예민하게'로 바꿔 보세요.</small></div>
+    <div class="field"><span>소리</span><div class="seg" id="setSound"><button data-v="1" class="${s.sound ? 'on' : ''}">켜기</button><button data-v="0" class="${!s.sound ? 'on' : ''}">끄기</button></div></div>
+    <div class="modal-actions" style="margin-bottom:12px"><button class="btn ghost" id="setClear" style="font-size:15px">기록 전부 지우기</button></div>
+    <div class="modal-actions"><button class="btn brick nostud" id="setDone" style="--c:var(--ink)">저장</button></div>`);
+  let sens = s.sens, sound = s.sound;
+  $$('#setSens button').forEach((b) => (b.onclick = () => { sens = +b.dataset.v; $$('#setSens button').forEach((x) => x.classList.toggle('on', x === b)); }));
+  $$('#setSound button').forEach((b) => (b.onclick = () => { sound = b.dataset.v === '1'; $$('#setSound button').forEach((x) => x.classList.toggle('on', x === b)); }));
+  $('#setClear').onclick = () => {
+    if (confirm('스트레스 기록을 모두 지울까요? 되돌릴 수 없어요.')) { Store.data.sessions = []; Store.save(); renderLobby(); $('#setClear').textContent = '지웠어요'; }
+  };
+  $('#setDone').onclick = () => { s.boss = $('#setBoss').value.trim(); s.sens = sens; s.sound = sound; Store.save(); closeModal(); renderLobby(); };
+}
+
+/* ----- 결과 ----- */
+let lastRoom = 'reject';
+function showResult(res) {
+  const room = ROOMS[res.room]; lastRoom = res.room;
+  show('result');
+  const lv = levelOf(res.stress);
+  const card = $('.res-card'); card.style.setProperty('--lvc', `var(--lv${lv})`);
+  const tag = $('#resRoom'); tag.textContent = room.title; tag.style.background = room.color;
+  if (!res.count) {
+    $('#resTitle').innerHTML = '오늘의 스트레스는 <b>0%</b>나 되었군요.';
+    $('#resStat').textContent = '하나도 안 건드리셨네요.';
+    $('#resComfort').textContent = '혹시 득도하셨나요? 아니면 너무 지쳐서 손 하나 까딱하기 싫은 날일 수도 있죠. 그런 날엔 그냥 쉬는 게 정답이에요.';
+    $('#resBricks').innerHTML = '<i></i>'.repeat(10);
+    return;
+  }
+  const title = $('#resTitle'); title.innerHTML = '오늘의 스트레스는 <b>0%</b>나 되었군요.';
+  const b = $('b', title);
+  const t0 = performance.now();
+  const step = (t) => { const k = Math.min(1, (t - t0) / 900); b.textContent = `${Math.round(res.stress * (1 - Math.pow(1 - k, 3)))}%`; if (k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+  const on = Math.max(1, Math.round(res.stress / 10));
+  $('#resBricks').innerHTML = Array.from({ length: 10 }, (_, i) => `<i class="${i < on ? 'on' : ''}" style="animation-delay:${i * 70}ms"></i>`).join('');
+  $('#resStat').textContent = room.stats(res);
+  const pool = COMFORT.find((c) => res.stress <= c.max).lines;
+  $('#resComfort').textContent = pick(pool);
+}
+
+/* ----- 캘린더 ----- */
+const cal = { y: 0, m: 0, sel: null };
+const ROOM_NAME = { reject: '반려의 방', shred: '업무 파쇄기', resign: '사직서 던지기' };
+function openCalendar() { const d = new Date(); cal.y = d.getFullYear(); cal.m = d.getMonth(); cal.sel = dayKey(d); renderCalendar(); show('calendar'); }
+function renderCalendar() {
+  $('#calMonth').textContent = `${cal.y}년 ${cal.m + 1}월`;
+  const first = new Date(cal.y, cal.m, 1), days = new Date(cal.y, cal.m + 1, 0).getDate(), today = dayKey();
+  let html = ['일', '월', '화', '수', '목', '금', '토'].map((w) => `<div class="wd">${w}</div>`).join('');
+  for (let i = 0; i < first.getDay(); i++) html += '<div class="cell empty"></div>';
+  const monthVals = [];
+  for (let d = 1; d <= days; d++) {
+    const k = `${cal.y}-${pad(cal.m + 1)}-${pad(d)}`, st = dayStats(k);
+    if (st) monthVals.push({ k, d, ...st });
+    html += `<button class="cell${k === today ? ' today' : ''}${k === cal.sel ? ' sel' : ''}" data-k="${k}"><span class="n">${d}</span>${st ? `<span class="b lv${levelOf(st.max)}">${st.max}%</span>` : ''}</button>`;
+  }
+  $('#calGrid').innerHTML = html;
+  $$('#calGrid .cell[data-k]').forEach((c) => (c.onclick = () => { cal.sel = c.dataset.k; renderCalendar(); }));
+  // 요약 / 선택한 날
+  const sel = cal.sel && cal.sel.startsWith(`${cal.y}-${pad(cal.m + 1)}`) ? dayStats(cal.sel) : null;
+  let sum = '';
+  if (monthVals.length) {
+    const avg = Math.round(monthVals.reduce((a, v) => a + v.max, 0) / monthVals.length);
+    const worst = monthVals.reduce((a, v) => (v.max > a.max ? v : a));
+    sum += `<h4>${cal.m + 1}월 요약</h4>기록한 날 <b>${monthVals.length}일</b> · 평균 <b>${avg}%</b><br>가장 힘들었던 날은 <b>${cal.m + 1}월 ${worst.d}일 (${worst.max}%)</b>이었어요.`;
+  } else sum += `<h4>${cal.m + 1}월 요약</h4>이번 달은 아직 기록이 없어요.`;
+  if (cal.sel && cal.sel.startsWith(`${cal.y}-${pad(cal.m + 1)}`)) {
+    const [, mm, dd] = cal.sel.split('-');
+    sum += `<h4 style="margin-top:14px">${+mm}월 ${+dd}일</h4>`;
+    if (sel) {
+      sum += `그날의 최고 스트레스 <b>${sel.max}%</b><ul>${sel.list.slice().sort((a, b) => a.ts - b.ts).map((s) => {
+        const t = new Date(s.ts); return `<li><span class="t">${pad(t.getHours())}:${pad(t.getMinutes())}</span><span class="r">${ROOM_NAME[s.room] || s.room} · ${s.count}회</span><i class="dot" style="background:var(--lv${levelOf(s.stress)})"></i><b>${s.stress}%</b></li>`;
+      }).join('')}</ul>`;
+    } else sum += '기록이 없는 날이에요.';
+  }
+  $('#calSum').innerHTML = sum;
+}
+
+/* ================= 이벤트 연결 ================= */
+$$('.room-card').forEach((b) => (b.onclick = () => openIntro(b.dataset.room)));
+$('#settingsBtn').onclick = openSettings;
+$('#calBtn').onclick = openCalendar;
+$('#exitBtn').onclick = () => Game.quit();
+$('#againBtn').onclick = () => openIntro(lastRoom);
+$('#homeBtn').onclick = () => { renderLobby(); show('lobby'); };
+$('#resCalBtn').onclick = openCalendar;
+$('#calBack').onclick = () => { renderLobby(); show('lobby'); };
+$('#calPrev').onclick = () => { cal.m--; if (cal.m < 0) { cal.m = 11; cal.y--; } renderCalendar(); };
+$('#calNext').onclick = () => { cal.m++; if (cal.m > 11) { cal.m = 0; cal.y++; } renderCalendar(); };
+// 모션 이벤트가 늦게 들어오기 시작하면 안내 갱신
+let hintShown = false;
+Motion.on(() => { if (!hintShown && Game.room && Motion.receiving) { hintShown = true; Game.setHint(); } });
+document.addEventListener('visibilitychange', () => { if (document.hidden) Sound.motorStop(); });
+
+renderLobby();
+// 테스트용 훅
+window.__office = { Game, Motion, Store, ROOMS };
+})();
+</script>
+</body>
+</html>
