@@ -55,35 +55,34 @@ h1,h2,h3,.jua{font-family:'Jua',sans-serif;font-weight:400;margin:0}
 .lobby-head .settings-btn{position:absolute;right:0;top:0}
 .lobby-head h1{margin:0}
 /* ---------- 로고: 오늘도 참았다 ---------- */
-.logo{--w:min(78px,21vw);display:inline-flex;flex-direction:column;align-items:center;gap:2px;position:relative}
+.logo{--w:min(80px,21vw);display:inline-flex;flex-direction:column;align-items:center;gap:2px;position:relative}
 .logo-top{font-family:'Gaegu',cursive;font-weight:700;font-size:min(30px,8.4vw);color:var(--ink);transform:rotate(-5deg) translateX(-28%);
   display:inline-flex;align-items:center;gap:4px;line-height:1;letter-spacing:0}
 .logo-top .dots{color:var(--ink2);letter-spacing:0}
-.logo-bricks{display:flex;gap:min(6px,1.6vw);padding-top:12px}
-.lb{--c:var(--red);position:relative;width:var(--w);height:calc(var(--w)*.9);border-radius:calc(var(--w)*.16);background:var(--c);
-  display:grid;place-items:center;font-family:'Black Han Sans',sans-serif;font-size:calc(var(--w)*.6);color:#fff;line-height:1;
-  text-shadow:0 3px 0 rgba(0,0,0,.22);transform:translateY(var(--dy,0)) rotate(var(--r,0));
-  box-shadow:inset 0 calc(var(--w)*-.09) 0 rgba(0,0,0,.2),inset 0 2px 0 rgba(255,255,255,.3),0 5px 0 rgba(0,0,0,.08)}
-.lb::before,.lb::after{content:"";position:absolute;top:calc(var(--w)*-.12);width:calc(var(--w)*.24);height:calc(var(--w)*.13);
-  border-radius:calc(var(--w)*.06) calc(var(--w)*.06) 0 0;background:var(--c);box-shadow:inset 0 2px 0 rgba(255,255,255,.3)}
-.lb::before{left:16%}.lb::after{right:16%}
-.lb.dark{color:var(--ink);text-shadow:0 3px 0 rgba(255,255,255,.35)}
-.lb .crack{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.lb .chip{position:absolute;right:-7px;bottom:20%;width:calc(var(--w)*.11);height:calc(var(--w)*.09);background:var(--c);border-radius:2px;transform:rotate(25deg);
-  box-shadow:-5px 10px 0 -1px var(--c)}
-.anger{position:absolute;right:calc(var(--w)*-.38);top:2px;width:calc(var(--w)*.46);height:calc(var(--w)*.46);animation:angry 1.1s ease-in-out infinite}
-.logo.big{--w:min(96px,25vw)}
+.logo-keys{display:flex;gap:min(8px,2vw);padding-top:8px}
+.kc{--c:#e3412f;--d:#b52c1e;--t:#f26a57;position:relative;width:var(--w);height:calc(var(--w)*.94);border-radius:calc(var(--w)*.2);
+  background:linear-gradient(180deg,var(--c),var(--d));display:grid;place-items:center;transform:translateY(var(--dy,0)) rotate(var(--r,0));
+  box-shadow:0 calc(var(--w)*.08) 0 rgba(0,0,0,.28),0 calc(var(--w)*.12) 8px rgba(0,0,0,.12)}
+.kc .top{position:absolute;left:11%;right:11%;top:6%;bottom:18%;border-radius:calc(var(--w)*.15);
+  background:radial-gradient(120% 95% at 50% 30%,var(--t),var(--c) 72%);box-shadow:inset 0 2px 0 rgba(255,255,255,.4),inset 0 -2px 0 rgba(0,0,0,.08)}
+.kc b{position:relative;font-family:'Black Han Sans',sans-serif;font-weight:400;font-size:calc(var(--w)*.5);color:#fff;line-height:1;margin-top:-12%;text-shadow:0 2px 0 rgba(0,0,0,.2)}
+.kc.y{--c:#f6c026;--d:#cf9a0c;--t:#ffdc63}.kc.y b{color:var(--ink);text-shadow:0 2px 0 rgba(255,255,255,.4)}
+.kc.b{--c:#2f6fd6;--d:#1f4fa6;--t:#5a90ec}
+.kc .crack{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.anger{position:absolute;right:calc(var(--w)*-.4);top:-8px;width:calc(var(--w)*.46);height:calc(var(--w)*.46);animation:angry 1.1s ease-in-out infinite}
 @keyframes angry{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.18) rotate(8deg)}}
 .lobby-head p{margin:6px 0 0;color:var(--ink2);font-size:15px}
 .today-chip{align-self:center;background:#fff;border-radius:999px;padding:8px 14px;font-size:14px;box-shadow:inset 0 -3px 0 #e6dccb;display:flex;gap:8px;align-items:center}
 .today-chip b{font-family:'Jua';font-weight:400}
 .dot{width:12px;height:12px;border-radius:4px;display:inline-block}
 .room-list{display:flex;flex-direction:column;gap:22px;margin-top:10px;max-width:520px;width:100%;align-self:center}
-.room-card{display:flex;align-items:center;gap:14px;padding:16px 16px 21px;text-align:left;color:#fff;width:100%;transition:transform .08s}
+.room-card{display:flex;align-items:center;gap:14px;padding:14px 14px 19px;border-radius:22px;text-align:left;color:#fff;width:100%;transition:transform .08s}
 .room-card:active{transform:translateY(3px)}
-.rc-icon{flex:0 0 64px;height:64px;border-radius:14px;background:rgba(255,255,255,.95);display:grid;place-items:center;
-  font-family:'Jua';font-size:20px;box-shadow:inset 0 -4px 0 rgba(0,0,0,.08)}
-.rc-icon.stampy{color:var(--stamp);border:3px double var(--stamp);transform:rotate(-8deg);background:#fff}
+.rc-icon{flex:0 0 80px;height:80px;border-radius:20px;background:rgba(255,255,255,.96);display:grid;place-items:center;
+  box-shadow:inset 0 -5px 0 rgba(0,0,0,.08)}
+.rc-icon svg{width:70px;height:70px;overflow:visible}
+.room-card:active .rc-icon svg{animation:wiggle .3s}
+@keyframes wiggle{30%{transform:rotate(-6deg) scale(1.05)}70%{transform:rotate(5deg)}}
 .rc-text h2{font-size:22px}
 .rc-text p{margin:3px 0 6px;font-size:14px;opacity:.95}
 .rc-how{display:inline-block;font-size:12px;background:rgba(0,0,0,.18);border-radius:999px;padding:3px 9px}
@@ -344,20 +343,40 @@ h1,h2,h3,.jua{font-family:'Jua',sans-serif;font-weight:400;margin:0}
   </header>
   <div class="today-chip" id="todayChip"></div>
   <div class="room-list">
-    <button class="room-card brick" data-room="reject" style="--c:var(--red)">
-      <div class="rc-icon stampy">반려</div>
+    <button class="room-card brick nostud" data-room="reject" style="--c:var(--red)">
+      <div class="rc-icon"><svg viewBox="0 0 80 80" aria-hidden="true">
+          <g transform="rotate(-9 40 60)"><rect x="13" y="47" width="54" height="25" rx="5" fill="none" stroke="#d8262a" stroke-width="3.2"/>
+            <text x="40" y="66.5" text-anchor="middle" font-family="Jua" font-size="16" letter-spacing="4" fill="#d8262a">반려</text></g>
+          <circle cx="16" cy="44" r="2.2" fill="#d8262a"/><circle cx="68" cy="50" r="1.8" fill="#d8262a"/>
+          <g transform="rotate(14 48 24)"><ellipse cx="48" cy="6" rx="9.5" ry="7" fill="#8a5a36"/><ellipse cx="45" cy="4" rx="3.5" ry="2" fill="#b58258"/>
+            <rect x="44" y="11" width="8" height="12" rx="2" fill="#a86e43"/><rect x="33" y="22" width="30" height="14" rx="5" fill="#c4875a"/>
+            <rect x="33" y="31" width="30" height="5" rx="2" fill="#a86e43"/><rect x="32" y="35" width="32" height="6" rx="2" fill="#d8262a"/></g>
+          <path d="M70 18l6-4M72 28h7M66 10l3-6" stroke="#f2b8b0" stroke-width="2.6" stroke-linecap="round"/></svg></div>
       <div class="rc-text"><h2>반려의 방</h2><p>상사가 올린 결재, 전부 반려!</p><span class="rc-how">📳 도장 찍듯 쾅! 내려찍기</span></div>
     </button>
-    <button class="room-card brick" data-room="shred" style="--c:var(--blue)">
-      <div class="rc-icon" style="color:var(--blue)">파쇄</div>
-      <div class="rc-text"><h2>업무 파쇄기</h2><p>쏟아지는 업무를 종이 국수로</p><span class="rc-how">📳 마구 흔들어 터보 가동</span></div>
+    <button class="room-card brick nostud" data-room="shred" style="--c:var(--blue)">
+      <div class="rc-icon"><svg viewBox="0 0 80 80" aria-hidden="true">
+          <g transform="rotate(-7 40 16)"><rect x="23" y="1" width="34" height="27" rx="2.5" fill="#fff" stroke="#cfc4b2" stroke-width="1.6"/>
+            <rect x="28" y="7" width="14" height="4" rx="2" fill="#e3412f"/><rect x="28" y="14" width="24" height="2.6" rx="1.3" fill="#ddd"/><rect x="28" y="19" width="18" height="2.6" rx="1.3" fill="#ddd"/></g>
+          <rect x="8" y="24" width="64" height="26" rx="7" fill="#2f6fd6"/><rect x="8" y="43" width="64" height="7" rx="3.5" fill="#1f4fa6"/>
+          <rect x="16" y="21.5" width="48" height="5.5" rx="2.75" fill="#1a1d29"/>
+          <circle cx="58" cy="34" r="3.2" fill="#7dff9a"/><circle cx="49" cy="34" r="3.2" fill="#ffd23f"/>
+          <g stroke-linecap="round" stroke-width="3.4"><path d="M19 53v14" stroke="#fff"/><path d="M26 53q2 8-1 19" stroke="#fff3b0"/><path d="M33 53v11" stroke="#fff"/>
+            <path d="M40 53q-2 9 1 21" stroke="#ffd6e0"/><path d="M47 53v15" stroke="#fff"/><path d="M54 53q2 6 0 12" stroke="#cfe2ff"/><path d="M61 53v17" stroke="#fff"/></g>
+          <g stroke="#c9d6ec" stroke-width="2" stroke-linecap="round"><path d="M3 29l3 2M2 38h4M77 29l-3 2M78 38h-4"/></g></svg></div>
+      <div class="rc-text"><h2>업무 파쇄기</h2><p>쏟아지는 업무를 모두 갈갈갈!</p><span class="rc-how">📳 마구 흔들어 터보 가동</span></div>
     </button>
-    <button class="room-card brick" data-room="resign" style="--c:var(--purple)">
-      <div class="rc-icon" style="color:var(--purple)">사직</div>
-      <div class="rc-text"><h2>사직서 던지기</h2><p>품어둔 사직서, 오늘은 던진다</p><span class="rc-how">📳 공 던지듯 휙!</span></div>
+    <button class="room-card brick nostud" data-room="resign" style="--c:var(--purple)">
+      <div class="rc-icon"><svg viewBox="0 0 80 80" aria-hidden="true">
+          <path d="M3 34h13M1 45h15M6 56h9" stroke="#cbbcf2" stroke-width="3.2" stroke-linecap="round"/>
+          <g transform="rotate(-13 47 41)"><rect x="25" y="8" width="44" height="66" rx="4" fill="#fff" stroke="#cfc4b2" stroke-width="1.6"/>
+            <path d="M25.5 12L47 27L68.5 12" fill="none" stroke="#e6dccb" stroke-width="2.2" stroke-linejoin="round"/>
+            <g font-family="Black Han Sans" font-size="13" text-anchor="middle" fill="#2b2a33"><text x="47" y="42">사</text><text x="47" y="55">직</text><text x="47" y="68">서</text></g>
+            <circle cx="61" cy="66" r="4.2" fill="#d8262a"/></g></svg></div>
+      <div class="rc-text"><h2>사직서 던지기</h2><p>품어왔던 사직서, 오늘은 던진다!</p><span class="rc-how">📳 공 던지듯 휙!</span></div>
     </button>
   </div>
-  <button class="btn brick" id="calBtn" style="--c:var(--green)">📅 스트레스 캘린더</button>
+  <button class="btn brick nostud" id="calBtn" style="--c:var(--green)">📅 스트레스 캘린더</button>
   <p class="foot">상사 이름과 기록은 이 폰에만 저장돼요.</p>
 </section>
 
@@ -431,12 +450,11 @@ const DEBUG_DUR = Number(params.get('t')) || 0; // ?t=8 → 8초 테스트
 /* ================= 로고 ================= */
 const LOGO_HTML = `<span class="logo" role="img" aria-label="오늘도 참았다">
   <span class="logo-top" aria-hidden="true">오늘도<span class="dots">…</span></span>
-  <span class="logo-bricks" aria-hidden="true">
-    <span class="lb" style="--c:var(--red);--r:-5deg">참</span>
-    <span class="lb dark" style="--c:var(--yellow);--r:3deg;--dy:-7px">았</span>
-    <span class="lb" style="--c:var(--blue);--r:-2deg">다
-      <svg class="crack" viewBox="0 0 100 90" fill="none" stroke="rgba(15,25,60,.5)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><polyline points="100,40 92,47 96,55 88,63 91,72"/><polyline points="96,55 100,58"/><polyline points="0,14 7,20 4,27"/></svg>
-      <i class="chip"></i>
+  <span class="logo-keys" aria-hidden="true">
+    <span class="kc" style="--r:-5deg"><i class="top"></i><b>참</b></span>
+    <span class="kc y" style="--r:3deg;--dy:-6px"><i class="top"></i><b>았</b></span>
+    <span class="kc b" style="--r:-2deg"><i class="top"></i><b>다</b>
+      <svg class="crack" viewBox="0 0 100 94" fill="none" stroke="rgba(10,20,60,.55)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><polyline points="98,30 90,38 95,47 87,55 91,66"/><polyline points="95,47 100,50"/></svg>
       <svg class="anger" viewBox="0 0 40 40" fill="none" stroke="#e3412f" stroke-width="5.5" stroke-linecap="round"><path d="M5 15Q15 15 15 5"/><path d="M25 5Q25 15 35 15"/><path d="M35 25Q25 25 25 35"/><path d="M15 35Q15 25 5 25"/></svg>
     </span>
   </span></span>`;
@@ -842,7 +860,7 @@ const Shred = {
     const r = el('div', 'r2');
     r.innerHTML = `<span class="pill pile-badge">쌓인 업무 <b>0</b></span>
       <div class="inbox"></div>
-      <div class="shredder brick"><div class="slot"></div><div class="label">업무 파쇄기<small>SHRED-3000</small></div><div class="leds">${'<i></i>'.repeat(5)}</div><div class="turbo">TURBO!</div></div>
+      <div class="shredder brick nostud"><div class="slot"></div><div class="label">업무 파쇄기<small>SHRED-3000</small></div><div class="leds">${'<i></i>'.repeat(5)}</div><div class="turbo">TURBO!</div></div>
       <div class="bin"><div class="bin-fill"></div></div>`;
     st.appendChild(r);
     this.root = r; this.inbox = $('.inbox', r); this.shredder = $('.shredder', r); this.leds = $$('.leds i', r); this.fill = $('.bin-fill', r);
