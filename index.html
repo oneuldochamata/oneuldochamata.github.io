@@ -822,6 +822,7 @@ const Game = {
     this.raf = requestAnimationFrame((tt) => this.loop(tt));
   },
   score(energy, label) {
+    if (!this.running) return; // 시간이 끝난 뒤 떨어진 사직서 등은 집계하지 않음
     this.energy += energy; this.count++;
     $('#gCount').textContent = `${this.room.unit} ${this.count}`;
     const now = performance.now();
