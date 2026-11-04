@@ -5,13 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#f4ede1">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="스트레스 룸">
-<meta name="description" content="반려의 방 · 업무 파쇄기 · 사직서 던지기. 폰을 휘둘러 회사 스트레스를 날리는 브릭 스타일 오피스 룸.">
-<title>오피스 스트레스 룸</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect x=%2214%22 y=%224%22 width=%2212%22 height=%229%22 rx=%223%22 fill=%22%23e3412f%22/%3E%3Crect x=%2238%22 y=%224%22 width=%2212%22 height=%229%22 rx=%223%22 fill=%22%23e3412f%22/%3E%3Crect x=%224%22 y=%2210%22 width=%2256%22 height=%2246%22 rx=%2210%22 fill=%22%23e3412f%22/%3E%3Ctext x=%2232%22 y=%2243%22 font-size=%2222%22 text-anchor=%22middle%22 fill=%22%23fff%22 font-family=%22sans-serif%22 font-weight=%22bold%22%3E%EB%B0%98%EB%A0%A4%3C/text%3E%3C/svg%3E">
+<meta name="apple-mobile-web-app-title" content="오늘도 참았다">
+<meta name="description" content="오늘도 참았다 — 반려의 방 · 업무 파쇄기 · 사직서 던지기. 폰을 휘둘러 회사 스트레스를 날리는 브릭 스타일 게임.">
+<title>오늘도 참았다</title>
+<link rel="icon" type="image/png" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gaegu:wght@700&family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#f4ede1; --ink:#2b2a33; --ink2:#6b6573; --paper:#fffdf7; --line:#e6dccb;
@@ -51,10 +53,27 @@ h1,h2,h3,.jua{font-family:'Jua',sans-serif;font-weight:400;margin:0}
   background:radial-gradient(circle at 20% 0%,#fff6e4 0,transparent 50%),var(--bg)}
 .lobby-head{position:relative;text-align:center;padding-top:6px}
 .lobby-head .settings-btn{position:absolute;right:0;top:0}
-.logo{display:inline-flex;gap:6px;margin-bottom:10px}
-.logo i{width:34px;height:22px;border-radius:6px;position:relative;box-shadow:inset 0 -4px 0 rgba(0,0,0,.2)}
-.logo i::before{content:"";position:absolute;top:-5px;left:5px;width:9px;height:6px;border-radius:3px 3px 0 0;background:inherit;box-shadow:15px 0 0 0 currentColor}
-.lobby-head h1{font-size:30px;letter-spacing:-.5px}
+.lobby-head h1{margin:0}
+/* ---------- 로고: 오늘도 참았다 ---------- */
+.logo{--w:min(78px,21vw);display:inline-flex;flex-direction:column;align-items:center;gap:2px;position:relative}
+.logo-top{font-family:'Gaegu',cursive;font-weight:700;font-size:min(30px,8.4vw);color:var(--ink);transform:rotate(-5deg) translateX(-28%);
+  display:inline-flex;align-items:center;gap:4px;line-height:1;letter-spacing:0}
+.logo-top .dots{color:var(--ink2);letter-spacing:0}
+.logo-bricks{display:flex;gap:min(6px,1.6vw);padding-top:12px}
+.lb{--c:var(--red);position:relative;width:var(--w);height:calc(var(--w)*.9);border-radius:calc(var(--w)*.16);background:var(--c);
+  display:grid;place-items:center;font-family:'Black Han Sans',sans-serif;font-size:calc(var(--w)*.6);color:#fff;line-height:1;
+  text-shadow:0 3px 0 rgba(0,0,0,.22);transform:translateY(var(--dy,0)) rotate(var(--r,0));
+  box-shadow:inset 0 calc(var(--w)*-.09) 0 rgba(0,0,0,.2),inset 0 2px 0 rgba(255,255,255,.3),0 5px 0 rgba(0,0,0,.08)}
+.lb::before,.lb::after{content:"";position:absolute;top:calc(var(--w)*-.12);width:calc(var(--w)*.24);height:calc(var(--w)*.13);
+  border-radius:calc(var(--w)*.06) calc(var(--w)*.06) 0 0;background:var(--c);box-shadow:inset 0 2px 0 rgba(255,255,255,.3)}
+.lb::before{left:16%}.lb::after{right:16%}
+.lb.dark{color:var(--ink);text-shadow:0 3px 0 rgba(255,255,255,.35)}
+.lb .crack{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.lb .chip{position:absolute;right:-7px;bottom:20%;width:calc(var(--w)*.11);height:calc(var(--w)*.09);background:var(--c);border-radius:2px;transform:rotate(25deg);
+  box-shadow:-5px 10px 0 -1px var(--c)}
+.anger{position:absolute;right:calc(var(--w)*-.38);top:2px;width:calc(var(--w)*.46);height:calc(var(--w)*.46);animation:angry 1.1s ease-in-out infinite}
+.logo.big{--w:min(96px,25vw)}
+@keyframes angry{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.18) rotate(8deg)}}
 .lobby-head p{margin:6px 0 0;color:var(--ink2);font-size:15px}
 .today-chip{align-self:center;background:#fff;border-radius:999px;padding:8px 14px;font-size:14px;box-shadow:inset 0 -3px 0 #e6dccb;display:flex;gap:8px;align-items:center}
 .today-chip b{font-family:'Jua';font-weight:400}
@@ -319,8 +338,7 @@ h1,h2,h3,.jua{font-family:'Jua',sans-serif;font-weight:400;margin:0}
 <!-- ===== 로비 ===== -->
 <section id="lobby" class="screen active">
   <header class="lobby-head">
-    <div class="logo" aria-hidden="true"><i style="background:var(--red);color:var(--red)"></i><i style="background:var(--yellow);color:var(--yellow)"></i><i style="background:var(--blue);color:var(--blue)"></i></div>
-    <h1>오피스 스트레스 룸</h1>
+    <h1 id="logoSlot"></h1>
     <p>회사에선 못 하는 것, 여기선 마음껏.</p>
     <button class="icon-btn settings-btn" id="settingsBtn" aria-label="설정">⚙️</button>
   </header>
@@ -410,8 +428,22 @@ const dayKey = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-
 const params = new URLSearchParams(location.search);
 const DEBUG_DUR = Number(params.get('t')) || 0; // ?t=8 → 8초 테스트
 
+/* ================= 로고 ================= */
+const LOGO_HTML = `<span class="logo" role="img" aria-label="오늘도 참았다">
+  <span class="logo-top" aria-hidden="true">오늘도<span class="dots">…</span></span>
+  <span class="logo-bricks" aria-hidden="true">
+    <span class="lb" style="--c:var(--red);--r:-5deg">참</span>
+    <span class="lb dark" style="--c:var(--yellow);--r:3deg;--dy:-7px">았</span>
+    <span class="lb" style="--c:var(--blue);--r:-2deg">다
+      <svg class="crack" viewBox="0 0 100 90" fill="none" stroke="rgba(15,25,60,.5)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><polyline points="100,40 92,47 96,55 88,63 91,72"/><polyline points="96,55 100,58"/><polyline points="0,14 7,20 4,27"/></svg>
+      <i class="chip"></i>
+      <svg class="anger" viewBox="0 0 40 40" fill="none" stroke="#e3412f" stroke-width="5.5" stroke-linecap="round"><path d="M5 15Q15 15 15 5"/><path d="M25 5Q25 15 35 15"/><path d="M35 25Q25 25 25 35"/><path d="M15 35Q15 25 5 25"/></svg>
+    </span>
+  </span></span>`;
+document.getElementById('logoSlot').innerHTML = LOGO_HTML;
+
 /* ================= 저장 ================= */
-const KEY = 'office-stress-room.v1';
+const KEY = 'oneuldo-chamatda.v1';
 const Store = {
   data: { settings: { boss: '', sens: 1, sound: true }, resignMsg: '', sessions: [] },
   load() {
