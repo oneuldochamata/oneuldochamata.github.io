@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#f4ede1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="오늘도 참았다">
-<meta name="description" content="오늘도 참았다 — 반려의 방 · 업무 파쇄기 · 사직서 던지기. 폰을 휘둘러 회사 스트레스를 날리는 브릭 스타일 게임.">
+<meta name="description" content="오늘도 참았다 — 결재 반려하기 · 업무 파쇄기 · 사직서 던지기. 폰을 휘둘러 회사 스트레스를 날리는 브릭 스타일 게임.">
 <title>오늘도 참았다</title>
 <link rel="icon" type="image/png" href="icons/favicon-64.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -100,7 +100,20 @@ h1,h2,h3,.jua{font-family:'Jua',sans-serif;font-weight:400;margin:0}
 .how li{background:#fff;border-radius:12px;padding:10px 12px;box-shadow:inset 0 -3px 0 var(--line);display:flex;gap:10px;align-items:center;line-height:1.35}
 .how li span:first-child{font-size:22px}
 .field{display:block;margin:0 0 14px}
-.field span{display:block;font-family:'Jua';font-size:15px;margin-bottom:6px}
+.field>span,.field-head>span{display:block;font-family:'Jua';font-size:15px;margin-bottom:6px}
+.field>span em{font-style:normal;color:var(--ink2);font-family:'Gowun Dodum';font-size:12px}
+.field-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.field-head>span{margin:0}
+.reset-btn{font-family:'Jua';font-size:13px;color:var(--red);background:#fff;border-radius:999px;padding:5px 11px;box-shadow:inset 0 -2px 0 var(--line)}
+.addrow{display:flex;gap:8px}
+.addrow input{flex:1;min-width:0}
+.add-btn{flex:0 0 auto;font-family:'Jua';font-size:15px;color:#fff;background:var(--ink);border-radius:12px;padding:0 16px;box-shadow:inset 0 -4px 0 rgba(0,0,0,.3)}
+.chips{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.chips:empty{display:none}
+.chips li{display:flex;align-items:center;gap:6px;background:#fff;border-radius:999px;padding:5px 6px 5px 12px;font-size:13px;box-shadow:inset 0 -2px 0 var(--line);max-width:100%}
+.chips li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chips li button{width:22px;height:22px;border-radius:50%;background:var(--bg);font-size:11px;flex:0 0 auto}
+.real{display:inline-block;font-family:'Jua';font-weight:400;font-size:11px;color:#fff;background:var(--stamp);border-radius:5px;padding:1px 6px;margin-right:6px;vertical-align:3px;letter-spacing:0}
 .field input{width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:#fff;font-size:16px;outline:none}
 .field input:focus{border-color:var(--ink)}
 .field small{display:block;color:var(--ink2);margin-top:5px;font-size:12px}
@@ -162,7 +175,7 @@ h1,h2,h3,.jua{font-family:'Jua',sans-serif;font-weight:400;margin:0}
 .bubble.show{animation:bubble 1.3s ease-out}
 .nameplate{background:#2b2a33;color:#ffe9a8;font-family:'Jua';font-size:13px;padding:4px 10px 6px;border-radius:6px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.4);white-space:nowrap}
 
-/* ---------- room 1: 반려의 방 ---------- */
+/* ---------- room 1: 결재 반려하기 ---------- */
 .r1{position:absolute;inset:0;background:
   linear-gradient(transparent 31%,var(--wood) 31%,var(--wood) 36%,var(--wood2) 36%,var(--wood2) 37.5%,transparent 37.5%),
   repeating-linear-gradient(0deg,transparent 0 23px,rgba(0,0,0,.035) 23px 25px),#efe5d3}
@@ -234,12 +247,22 @@ h1,h2,h3,.jua{font-family:'Jua',sans-serif;font-weight:400;margin:0}
   background:repeating-linear-gradient(90deg,transparent 0 60px,rgba(0,0,0,.05) 60px 62px)}
 .r3 .win{position:absolute;top:5%;right:7%;width:24%;height:18%;background:linear-gradient(#ffd9a8,#ffe9cf);border:6px solid #fff;border-radius:8px}
 .r3 .frame{position:absolute;top:7%;left:8%;width:58px;height:42px;background:#fff;border:4px solid var(--wood);border-radius:4px;font-family:'Jua';font-size:10px;display:grid;place-items:center;text-align:center;line-height:1.1;color:var(--ink2)}
-.target{position:absolute;left:50%;top:15%;width:min(70%,280px);height:34%;transform:translateX(-50%)}
-.target .boss-wrap{position:absolute;left:50%;top:0;transform:translateX(-50%) scale(.78);transform-origin:top center}
+.target{position:absolute;left:50%;top:12%;width:min(80%,300px);height:37%;transform:translateX(-50%)}
+.chair{position:absolute;left:50%;top:9%;width:108px;height:120px;margin-left:-54px;background:#4b4f63;border-radius:28px 28px 10px 10px;
+  box-shadow:inset 0 -8px 0 rgba(0,0,0,.2),inset 0 3px 0 rgba(255,255,255,.14)}
+.target .boss-wrap{position:absolute;left:50%;top:2%;transform:translateX(-50%) scale(.8);transform-origin:top center}
+.hands{position:absolute;left:50%;top:-5px;width:86px;margin-left:-43px;display:flex;justify-content:space-between;z-index:4;pointer-events:none}
+.hands i{width:21px;height:12px;border-radius:6px;background:#ffd6ad;box-shadow:inset 0 -3px 0 rgba(0,0,0,.1)}
+.monitor{position:absolute;left:3%;top:-40px;width:58px;height:42px;background:#2b2a33;border:4px solid #44434f;border-radius:7px;z-index:1}
+.monitor::after{content:"";position:absolute;left:50%;bottom:-12px;width:10px;height:9px;margin-left:-5px;background:#44434f}
+.mug{position:absolute;right:6%;top:-16px;width:18px;height:20px;background:#fff;border-radius:3px 3px 6px 6px;z-index:4;box-shadow:inset 0 -3px 0 #e6dccb}
+.mug::after{content:"";position:absolute;right:-7px;top:4px;width:7px;height:9px;border:3px solid #fff;border-left:0;border-radius:0 6px 6px 0}
+.desk-plate{position:absolute;left:50%;bottom:calc(54% + 4px);transform:translateX(-50%);z-index:5;display:flex;flex-direction:column;align-items:center}
+.desk-plate .nameplate{font-size:14px;padding:5px 12px 7px;border-radius:5px 5px 2px 2px}
+.desk-plate::after{content:"";width:calc(100% + 8px);height:5px;background:#5a4632;border-radius:2px}
 .desk3{position:absolute;left:0;right:0;bottom:0;height:58%}
 .desk-top{position:absolute;left:0;right:0;top:0;height:46%;background:#c98c58;clip-path:polygon(9% 0,91% 0,100% 100%,0 100%);z-index:2}
 .desk-front{position:absolute;left:0;right:0;top:46%;bottom:0;background:var(--wood2);border-radius:0 0 8px 8px;box-shadow:inset 0 -8px 0 rgba(0,0,0,.18);z-index:2}
-.desk-front .nameplate{position:absolute;left:50%;top:10px;transform:translateX(-50%)}
 .desk3.bump{animation:bump .3s}
 .landed{position:absolute;left:0;right:0;top:0;height:46%;z-index:3}
 .landed .env{position:absolute;width:30px;height:20px;margin:-10px 0 0 -15px;transform:rotate(var(--r))}
@@ -352,7 +375,7 @@ h1,h2,h3,.jua{font-family:'Jua',sans-serif;font-weight:400;margin:0}
             <rect x="44" y="11" width="8" height="12" rx="2" fill="#a86e43"/><rect x="33" y="22" width="30" height="14" rx="5" fill="#c4875a"/>
             <rect x="33" y="31" width="30" height="5" rx="2" fill="#a86e43"/><rect x="32" y="35" width="32" height="6" rx="2" fill="#d8262a"/></g>
           <path d="M70 18l6-4M72 28h7M66 10l3-6" stroke="#f2b8b0" stroke-width="2.6" stroke-linecap="round"/></svg></div>
-      <div class="rc-text"><h2>반려의 방</h2><p>상사가 올린 결재, 전부 반려!</p><span class="rc-how">📳 도장 찍듯 쾅! 내려찍기</span></div>
+      <div class="rc-text"><h2>결재 반려하기</h2><p>상사가 올린 결재, 전부 반려!</p><span class="rc-how">📳 도장 찍듯 쾅! 내려찍기</span></div>
     </button>
     <button class="room-card brick nostud" data-room="shred" style="--c:var(--blue)">
       <div class="rc-icon"><svg viewBox="0 0 80 80" aria-hidden="true">
@@ -377,7 +400,7 @@ h1,h2,h3,.jua{font-family:'Jua',sans-serif;font-weight:400;margin:0}
     </button>
   </div>
   <button class="btn brick nostud" id="calBtn" style="--c:var(--green)">📅 스트레스 캘린더</button>
-  <p class="foot">상사 이름과 기록은 이 폰에만 저장돼요.</p>
+  <p class="foot">모든 사용 기록은 본 기기에만 저장됩니다.</p>
 </section>
 
 <!-- ===== 게임 ===== -->
@@ -407,7 +430,7 @@ h1,h2,h3,.jua{font-family:'Jua',sans-serif;font-weight:400;margin:0}
   </div>
   <div class="res-actions">
     <button class="btn brick nostud" id="againBtn" style="--c:var(--ink)">한 번 더</button>
-    <button class="btn ghost" id="homeBtn">다른 방 가기</button>
+    <button class="btn ghost" id="homeBtn">다른 게임 하기</button>
     <button class="btn brick nostud wide" id="resCalBtn" style="--c:var(--green)">📅 스트레스 캘린더 보기</button>
   </div>
 </section>
@@ -463,11 +486,13 @@ document.getElementById('logoSlot').innerHTML = LOGO_HTML;
 /* ================= 저장 ================= */
 const KEY = 'oneuldo-chamatda.v1';
 const Store = {
-  data: { settings: { boss: '', sens: 1, sound: true }, resignMsg: '', sessions: [] },
+  data: { settings: { boss: '', sens: 1, sound: true }, custom: { reject: [], shred: [], resign: [] }, sessions: [] },
   load() {
     try {
       const d = JSON.parse(localStorage.getItem(KEY) || 'null');
       if (d) this.data = { ...this.data, ...d, settings: { ...this.data.settings, ...(d.settings || {}) }, sessions: Array.isArray(d.sessions) ? d.sessions : [] };
+      const c = (d && d.custom) || {};
+      this.data.custom = { reject: Array.isArray(c.reject) ? c.reject : [], shred: Array.isArray(c.shred) ? c.shred : [], resign: Array.isArray(c.resign) ? c.resign : [] };
     } catch (e) { /* 저장소를 못 쓰는 환경 */ }
   },
   save() { try { localStorage.setItem(KEY, JSON.stringify(this.data)); } catch (e) { /* noop */ } },
@@ -598,6 +623,19 @@ const COMFORT = [
   { max: 84, lines: ['꽤 많이 참았던 하루네요. 티 안 내고 버틴 거, 여기선 다 알아요.', '오늘 정말 애썼어요. 일은 회사에 두고 오고, 마음만 데리고 집에 가요.', '속으로 몇 번이나 삼켰을까요. 오늘 할 일은 이걸로 끝이에요.'] },
   { max: 100, lines: ['정말… 고생 많았어요. 오늘 일은 당신 탓이 아니에요. 휴대폰 내려놓고 푹 자요.', '한계까지 버틴 하루였네요. 내일 일은 내일의 당신이 알아서 할 거예요. 오늘은 그냥 쉬어요.', '이만큼 쌓이도록 혼자 견뎠군요. 맛있는 거 먹고, 오늘만큼은 아무것도 하지 않아도 돼요.'] },
 ];
+// 직접 쓴 내용은 랜덤 내용 사이사이 섞어서 등장 (1개면 35%, 많을수록 최대 60%)
+const lastPick = {};
+function pickContent(roomId, pool, avoid) {
+  const mine = Store.data.custom[roomId] || [];
+  const chance = mine.length ? Math.min(0.6, 0.25 + mine.length * 0.1) : 0;
+  let text, isMine, tries = 0;
+  do {
+    isMine = Math.random() < chance;
+    text = isMine ? pick(mine) : pick(pool);
+  } while ((text === lastPick[roomId] || (avoid && avoid.has(isMine ? text : text.split('|')[1]))) && ++tries < 8);
+  lastPick[roomId] = text;
+  return { text, mine: isMine };
+}
 const levelOf = (p) => (p < 30 ? 1 : p < 60 ? 2 : p < 85 ? 3 : 4);
 
 /* ================= 게임 진행 ================= */
@@ -609,7 +647,7 @@ const Game = {
   every(fn, ms) { const id = setInterval(fn, ms); this.timers.push(id); return id; },
   async start(roomId) {
     const room = ROOMS[roomId];
-    this.room = room; this.running = false; this.energy = 0; this.count = 0; this.best = 0; this.comboN = 0;
+    this.room = room; this.running = false; this.energy = 0; this.count = 0; this.best = 0; this.comboN = 0; this.mine = new Set();
     this.duration = DEBUG_DUR || room.duration; this.timeLeft = this.duration;
     show('game');
     $('#gTitle').textContent = room.title;
@@ -705,7 +743,7 @@ const Game = {
     const stress = this.count ? clamp(Math.round(100 * (1 - Math.exp(-this.energy / room.K))), 3, 99) : 0;
     const res = { ts: Date.now(), day: dayKey(), room: room.id, stress, count: this.count, best: Math.round(this.best * 100) };
     if (this.count) { Store.data.sessions.push(res); Store.save(); }
-    return res;
+    return { ...res, mine: [...this.mine] };
   },
 };
 const fmt = (s) => `0:${pad(Math.max(0, Math.ceil(s)))}`;
@@ -757,7 +795,7 @@ function flickTracker(target, { onMove, onEnd, onTap }) {
   target.addEventListener('pointercancel', () => { if (pts) { pts = null; onEnd && onEnd({ dx: 0, dy: 0, vx: 0, vy: 0 }); } });
 }
 
-/* ================= 방 1: 반려의 방 ================= */
+/* ================= 방 1: 결재 반려하기 ================= */
 const DOC_TITLES = ['주말 워크숍 기획안 (전원 필참)', '퇴근 30분 전 긴급 회의 소집', '보고서 양식 개선을 위한 보고서', '연차 사용 자제 협조 요청', '회식 2차·3차 동선 계획',
   'PPT 폰트 전면 재수정 건', '어제 말한 거 오늘 오전까지', '주간보고의 일일보고 전환 건', '금요일 18시 업무 공유회', '신년 장기자랑 참가 신청서',
   '엑셀 셀 색깔 통일 지침', '아침 회의 7시 30분 변경 건', '휴가 중 메신저 상시 확인 요청', '"간단한" 자료 50장 작성 요청', '갑자기 생각난 신규 프로젝트',
@@ -765,14 +803,13 @@ const DOC_TITLES = ['주말 워크숍 기획안 (전원 필참)', '퇴근 30분 
   '점심시간 업무 효율화 방안', '내일 출근 1시간 앞당기기', '퇴근 후 전화 상시 대기 지침', '야근 식대 절감 방안'];
 const BOSS_LINES_R = ['아니 이걸 왜…', '다시 올릴게…', '이것도?!', '검토라도… 좀…', '헉', '반려라니…', '다음 건은 괜찮을 거야', '내가 뭘 잘못했지…', '흐음…?!', '😰', '…네.'];
 const Reject = {
-  id: 'reject', title: '반려의 방', unit: '반려', duration: 40, K: 60, color: 'var(--red)',
+  id: 'reject', title: '결재 반려하기', unit: '반려', duration: 40, K: 60, color: 'var(--red)', usesBoss: true, doneWord: '반려 완료',
+  custom: { label: '반려할 결재 문서 직접 쓰기', ph: '예: 금요일 6시 긴급 회의 소집' },
   hintMotion: '폰을 <b>도장처럼</b> 쥐고 아래로 <b>쾅!</b> 내려찍어요', hintTouch: '서류를 <b>탭</b>해서 반려 도장을 찍어요',
   intro() {
     return {
       lead: `${esc(Store.boss)}님이 끝도 없이 결재를 올립니다. 오늘은 전부 반려해 버리세요!`,
       how: [['📳', '폰을 도장처럼 쥐고 <b>아래로 쾅!</b> 내려찍기'], ['👆', '또는 서류를 <b>탭</b>해도 돼요'], ['⚡', '빠르게 연속으로 찍으면 콤보!']],
-      fields: `<label class="field"><span>반려를 왕창 준 상사 이름</span><input id="bossInput" maxlength="12" placeholder="예: 김부장" value="${esc(Store.data.settings.boss)}"><small>결재 문서의 기안자로 들어가요. 이 폰에만 저장돼요.</small></label>`,
-      before() { const v = $('#bossInput').value.trim(); Store.data.settings.boss = v; Store.save(); },
     };
   },
   mount(st) {
@@ -789,10 +826,11 @@ const Reject = {
   },
   newDoc() {
     const d = el('div', 'doc enter');
+    const c = pickContent('reject', DOC_TITLES); this.docMine = c.mine ? c.text : null;
     const lines = Array.from({ length: 8 }, () => `<i style="width:${rand(55, 100)}%"></i>`).join('');
     d.innerHTML = `<div class="doc-head"><h4>결재 요청서</h4>
       <table class="sign"><tr><th>기안</th><th>검토</th><th>나</th></tr><tr><td><span class="mini-seal">${esc(Store.boss.slice(0, 3))}</span></td><td></td><td></td></tr></table></div>
-      <div class="doc-title">${esc(pick(DOC_TITLES))}</div>
+      <div class="doc-title">${c.mine ? '<span class="real">실제 상황</span>' : ''}${esc(c.text)}</div>
       <div class="doc-meta"><span>기안자: ${esc(Store.boss)}</span><span>긴급도 ${'★'.repeat(Math.ceil(rand(3, 5)))}</span></div>
       <div class="doc-lines">${lines}</div>`;
     d.addEventListener('pointerdown', (e) => { e.preventDefault(); if (Game.running) this.stamp(0.35, false, e); });
@@ -821,6 +859,7 @@ const Reject = {
     Sound.stamp(intensity); haptic(fromMotion ? 40 : 25);
     if (intensity > 0.6) Game.shake(intensity > 0.85); else Game.shake(false);
     Game.best = Math.max(Game.best, intensity);
+    if (this.docMine) Game.mine.add(this.docMine);
     Game.score(1 + intensity * 1.5, intensity > 0.85 ? '쾅!! 강력 반려' : null);
     if (Math.random() < 0.55) bossReact(this.boss, pick(BOSS_LINES_R), Math.random() < 0.5 ? 'shock' : 'sad', intensity > 0.7);
     else bossReact(this.boss, null, 'shock');
@@ -834,7 +873,7 @@ const Reject = {
       Game.later(() => { this.newDoc(); this.busy = false; }, 140);
     }, 230);
   },
-  stats(res) { return `${esc(Store.boss)}님의 결재 ${res.count}건, 전부 반려 완료.`; },
+  stats(res) { return `${Store.boss}님의 결재 ${res.count}건, 전부 반려 완료.`; },
 };
 
 /* ================= 방 2: 업무 파쇄기 ================= */
@@ -843,16 +882,16 @@ const TASKS = [['긴급', '{b}: 이거 오늘까지 되죠?'], ['ASAP', '엑셀 
   ['회신', '메일 회신 부탁드립니다 (3차)'], ['긴급', '1분만 시간 되세요?'], ['ASAP', '이것만 잠깐 봐줄래요?'], ['재요청', '버전 다시 올려주세요'],
   ['공유', '전체 회신으로 공유 부탁'], ['확인', '숫자가 좀 이상한데요?'], ['오늘까지', '{b}: 내일 아침 보고용'], ['긴급', '{b}: 지금 자리에 있어요?'],
   ['수정', '로고 좀 더 크게… 아니 작게'], ['ASAP', '갑자기 생긴 미팅 자료'], ['회신', '참조에 저도 넣어주세요'], ['오늘까지', '분기 실적 다시 뽑기']];
-const TAG_COLORS = { 긴급: 'var(--red)', ASAP: 'var(--orange)', 재요청: 'var(--purple)', 오늘까지: 'var(--red)', 확인: 'var(--blue)', 수정: 'var(--green)', 회신: 'var(--blue)', 공유: '#888' };
+const TAG_COLORS = { 실화: 'var(--ink)', 긴급: 'var(--red)', ASAP: 'var(--orange)', 재요청: 'var(--purple)', 오늘까지: 'var(--red)', 확인: 'var(--blue)', 수정: 'var(--green)', 회신: 'var(--blue)', 공유: '#888' };
 const PAPER_COLORS = ['#ffffff', '#fffbe0', '#eef6ff', '#fff0f3', '#f0fff3'];
 const Shred = {
-  id: 'shred', title: '업무 파쇄기', unit: '파쇄', duration: 40, K: 55, color: 'var(--blue)',
+  id: 'shred', title: '업무 파쇄기', unit: '파쇄', duration: 40, K: 55, color: 'var(--blue)', doneWord: '파쇄 완료',
+  custom: { label: '갈아버릴 업무 직접 쓰기', ph: '예: 퇴근 10분 전에 온 엑셀 취합' },
   hintMotion: '폰을 <b>마구 흔들면</b> 파쇄기 터보! 종이는 <b>아래로 쓸어</b> 넣어요', hintTouch: '종이를 <b>아래로 쓸거나 탭</b>하고, 파쇄기를 <b>연타</b>하면 터보',
   intro() {
     return {
       lead: '오늘도 업무가 쏟아집니다. 하나도 남김없이 파쇄기에 갈아버리세요!',
       how: [['📳', '폰을 <b>좌우로 마구 흔들면</b> 파쇄기 터보 가동 → 업무가 저절로 빨려 들어가요'], ['👆', '업무 종이를 <b>아래로 쓸어내리거나 탭</b>'], ['🔘', '파쇄기를 <b>연타</b>해도 터보가 차요']],
-      fields: '',
     };
   },
   mount(st) {
@@ -870,9 +909,13 @@ const Shred = {
   spawn(initial) {
     const papers = $$('.task:not(.gone)', this.inbox);
     if (papers.length >= 14) return;
-    const [tag, text] = pick(TASKS);
+    const onScreen = new Set(papers.map((x) => x.dataset.text));
+    const c = pickContent('shred', TASKS.map((t) => t.join('|')), onScreen);
+    const [tag, text] = c.mine ? ['실화', c.text] : c.text.split('|');
     const p = el('div', 'task drop');
     p.style.setProperty('--r', `${rand(-12, 12)}deg`); p.style.setProperty('--pc', pick(PAPER_COLORS)); p.style.setProperty('--tc', TAG_COLORS[tag] || 'var(--red)');
+    if (c.mine) p.dataset.mine = c.text;
+    p.dataset.text = c.mine ? c.text : text;
     p.innerHTML = `<span class="tag">${tag}</span><p>${esc(text.replace('{b}', Store.boss))}</p>`;
     const W = this.inbox.clientWidth, H = this.inbox.clientHeight;
     const w = Math.min(W * 0.46, 180);
@@ -896,6 +939,7 @@ const Shred = {
   shredPaper(p, tx, ty) {
     if (!Game.running || p.classList.contains('gone')) return;
     p.classList.add('gone'); p.classList.remove('drop'); p.style.zIndex = 50;
+    if (p.dataset.mine) Game.mine.add(p.dataset.mine);
     this.updateBadge();
     const rr = this.root.getBoundingClientRect(), slot = $('.slot', this.shredder).getBoundingClientRect();
     const left = p.offsetLeft, top = p.offsetTop, w = p.offsetWidth, h = p.offsetHeight;
@@ -962,30 +1006,33 @@ const Shred = {
 };
 
 /* ================= 방 3: 사직서 던지기 ================= */
+const RESIGN_LINES = ['일신상의 사유로 퇴사하고자 합니다', '제 연봉이 제 인내심보다 적습니다', '회의를 위한 회의에 지쳤습니다', '월요일이 너무 자주 옵니다',
+  '최종_진짜최종_v7 에 지쳤습니다', '퇴근 후 카톡은 사양합니다', '꿈을 찾아 떠납니다 (꿈: 늦잠)', '이제 제 인생 결재는 제가 합니다', '통장 잔고 빼고 다 바닥났습니다',
+  '"잠깐 얘기 좀" 이 무섭습니다', '저 그냥 자연인 하겠습니다', '야근이 기본값이 되어 버렸습니다', '제 멘탈은 연차가 없습니다', '보고서의 보고서는 그만 쓰고 싶습니다'];
 const BOSS_LINES_T = ['헉!', '이게 뭐야?!', '자… 잠깐만!', '다시 생각해 봐…', '연봉 얘기 좀 할까?', '우리 대화로 풀자…', '커피 한 잔 할래…?', '이번 주만 버텨줘…', '내 책상이…!', '😱'];
 const Resign = {
-  id: 'resign', title: '사직서 던지기', unit: '투척', duration: 40, K: 40, color: 'var(--purple)',
+  id: 'resign', title: '사직서 던지기', unit: '투척', duration: 40, K: 40, color: 'var(--purple)', usesBoss: true, doneWord: '투척 완료',
+  custom: { label: '사직서에 쓸 사유 직접 쓰기', ph: '예: 주말 출근이 당연해졌습니다' },
   hintMotion: '폰을 꽉 쥐고 <b>공 던지듯 앞으로 휙!</b> (놓치지 않게 조심)', hintTouch: '사직서를 <b>위로 휙</b> 밀어 올려 던져요',
   intro() {
     return {
-      lead: '가슴속에 품어둔 사직서, 오늘은 마음껏 던지세요. 세게 던질수록 책상이 들썩입니다.',
-      how: [['📳', '폰을 꽉 쥐고 <b>공 던지듯 앞으로 휙!</b>'], ['👆', '또는 사직서를 <b>위로 빠르게 밀어 올리기</b>'], ['💥', '파워가 셀수록 쾅!! (진짜로 놓치면 안 돼요)']],
-      fields: `<label class="field"><span>사직서에 쓸 한마디 (선택)</span><input id="resignInput" maxlength="24" placeholder="예: 이제 그만하겠습니다" value="${esc(Store.data.resignMsg)}"></label>`,
-      before() { Store.data.resignMsg = $('#resignInput').value.trim(); Store.save(); },
+      lead: `${esc(Store.boss)}님이 자리에 앉아 있어요. 품어왔던 사직서, 오늘은 저 책상을 향해 던지세요!`,
+      how: [['📳', '폰을 꽉 쥐고 <b>공 던지듯 앞으로 휙!</b>'], ['👆', '또는 사직서를 <b>위로 빠르게 밀어 올리기</b>'], ['💥', '세게 던질수록 상사한테까지 날아가요! (폰은 절대 놓치지 마세요)']],
     };
   },
   mount(st) {
     this.busy = false; this.landedN = 0;
     const r = el('div', 'r3');
-    const msg = Store.data.resignMsg || '일신상의 사유로 퇴사하고자 합니다';
     r.innerHTML = `<div class="win"></div><div class="frame">이달의<br>사원</div>
-      <div class="target"><div class="boss-wrap">${bossHTML(Store.boss)}</div>
-        <div class="desk3"><div class="desk-top"></div><div class="landed"></div><div class="desk-front"><span class="nameplate">${esc(Store.boss)}</span></div></div></div>
-      <div class="aim">↑ 휙!</div>
-      <div class="holder"><div class="env rise"><b>사직서</b><small>“${esc(msg)}”</small><span class="seal">印</span></div></div>`;
+      <div class="target"><div class="chair"></div><div class="boss-wrap">${bossHTML(Store.boss)}</div>
+        <div class="desk3"><div class="monitor"></div><div class="mug"></div><div class="hands"><i></i><i></i></div>
+          <div class="desk-top"></div><div class="landed"></div><div class="desk-plate"><span class="nameplate">${esc(Store.boss)}</span></div><div class="desk-front"></div></div></div>
+      <div class="aim">↑ ${esc(Store.boss)}님을 향해 휙!</div>
+      <div class="holder"><div class="env rise"><b>사직서</b><small></small><span class="seal">印</span></div></div>`;
     st.appendChild(r);
     this.root = r; this.env = $('.holder .env', r); this.boss = $('.boss-wrap', r); this.landed = $('.landed', r); this.desk = $('.desk3', r);
-    $('.boss-wrap .nameplate', r).remove(); // 책상 명패로 대체
+    $('.boss-wrap .nameplate', r).remove(); // 책상 위 명패로 대체
+    this.loadEnv();
     this.detector = peakDetector({ threshold: 15, cooldown: 650, win: 130, onPeak: (p) => this.throwIt(clamp(p.intensity * 0.85 + clamp(p.rot / 900, 0, 1) * 0.25, 0.08, 1), true) });
     flickTracker($('.holder', r), {
       onMove: (dx, dy) => { if (!this.busy) this.env.style.transform = `translate(${dx * 0.25}px,${Math.min(0, dy) * 0.35}px) rotate(${dx * 0.05}deg)`; },
@@ -996,6 +1043,10 @@ const Resign = {
       onTap: () => {},
     });
   },
+  loadEnv() {
+    const c = pickContent('resign', RESIGN_LINES); this.envMine = c.mine ? c.text : null;
+    $('small', this.env).innerHTML = `${c.mine ? '<span class="real">실화</span>' : ''}“${esc(c.text)}”`;
+  },
   onMotion(s) { this.detector(s); },
   throwIt(power, fromMotion) {
     if (!Game.running || this.busy) return;
@@ -1003,9 +1054,13 @@ const Resign = {
     const env = this.env; env.classList.remove('rise');
     const tier = power < 0.33 ? 1 : power < 0.7 ? 2 : 3;
     const rr = this.root.getBoundingClientRect(), er = env.getBoundingClientRect(), lr = this.landed.getBoundingClientRect();
-    const lx = rand(0.18, 0.82), ly = tier === 1 ? rand(0.65, 0.9) : rand(0.2, 0.75);
-    const tx = lr.left + lr.width * lx, ty = lr.top + lr.height * ly;
-    const dx = tx - (er.left + er.width / 2), dy = ty - (er.top + er.height / 2);
+    if (this.envMine) Game.mine.add(this.envMine);
+    const lx = tier === 3 ? rand(0.38, 0.62) : rand(0.2, 0.8), ly = tier === 1 ? rand(0.68, 0.92) : tier === 2 ? rand(0.3, 0.7) : rand(0.08, 0.35);
+    const land = { x: lr.left + lr.width * lx, y: lr.top + lr.height * ly };
+    let hit = land;
+    if (tier === 3) { const fr = $('.fig', this.boss).getBoundingClientRect(); hit = { x: fr.left + fr.width / 2 + rand(-10, 10), y: fr.top + fr.height * rand(0.45, 0.7) }; }
+    const ex = er.left + er.width / 2, ey = er.top + er.height / 2;
+    const dx = hit.x - ex, dy = hit.y - ey;
     const cur = env.style.transform || 'translate(0,0)';
     const spin = rand(300, 620) * (Math.random() < 0.5 ? -1 : 1);
     const endScale = 30 / er.width;
@@ -1014,15 +1069,25 @@ const Resign = {
     const a = env.animate([
       { transform: cur },
       { transform: `translate(${dx * 0.55}px,${dy * 0.7 - 70 - power * 60}px) scale(${0.55}) rotate(${spin * 0.55}deg)`, offset: 0.55 },
-      { transform: `translate(${dx}px,${dy}px) scale(${endScale}) rotate(${spin}deg)` },
+      { transform: `translate(${dx}px,${dy}px) scale(${endScale * (tier === 3 ? 1.3 : 1)}) rotate(${spin}deg)` },
     ], { duration: 560 - power * 160, easing: 'cubic-bezier(.3,.6,.6,1)', fill: 'forwards' });
-    a.onfinish = () => {
-      a.cancel(); env.style.opacity = '0';
+    const settle = () => {
+      env.style.opacity = '0';
       const lnd = el('i', 'env'); lnd.style.left = `${lx * 100}%`; lnd.style.top = `${ly * 100}%`; lnd.style.setProperty('--r', `${rand(-40, 40)}deg`);
       this.landed.appendChild(lnd); this.landedN++;
       if (this.landed.children.length > 16) this.landed.firstElementChild.remove();
-      this.impact(tier, power, tx - rr.left, ty - rr.top);
-      Game.later(() => { env.style.opacity = ''; env.classList.remove('rise'); void env.offsetWidth; env.classList.add('rise'); this.busy = false; }, 320);
+      Game.later(() => { env.getAnimations().forEach((x) => x.cancel()); this.loadEnv(); env.style.opacity = ''; env.classList.remove('rise'); void env.offsetWidth; env.classList.add('rise'); this.busy = false; }, 320);
+    };
+    a.onfinish = () => {
+      this.impact(tier, power, hit.x - rr.left, hit.y - rr.top);
+      if (tier !== 3) { a.cancel(); settle(); return; }
+      // 상사에게 명중 → 툭 떨어져 책상 위로
+      const b2 = env.animate([
+        { transform: `translate(${dx}px,${dy}px) scale(${endScale * 1.3}) rotate(${spin}deg)` },
+        { transform: `translate(${land.x - ex}px,${land.y - ey}px) scale(${endScale}) rotate(${spin + rand(-60, 60)}deg)` },
+      ], { duration: 260, easing: 'cubic-bezier(.5,0,.9,.6)', fill: 'forwards' });
+      a.cancel();
+      b2.onfinish = () => { Sound.land(1); settle(); };
     };
   },
   impact(tier, power, x, y) {
@@ -1033,7 +1098,7 @@ const Resign = {
       haptic(90); Game.shake(true);
       this.desk.classList.remove('bump'); void this.desk.offsetWidth; this.desk.classList.add('bump');
       bossReact(this.boss, pick(BOSS_LINES_T), 'shock', true);
-      pop(this.root, x, y - 40, '쾅!!', 54, 'var(--red)');
+      pop(this.root, Math.min(x + 90, this.root.clientWidth - 70), y + 10, '명중!!', 46, 'var(--red)');
       for (let i = 0; i < 8; i++) {
         const f = el('i', 'flyer'); f.style.left = `${x}px`; f.style.top = `${y}px`; this.root.appendChild(f);
         const ang = rand(-Math.PI, 0), dist = rand(60, 140);
@@ -1081,14 +1146,42 @@ modalBg.addEventListener('click', (e) => { if (e.target === modalBg) closeModal(
 
 function openIntro(roomId) {
   const room = ROOMS[roomId]; const it = room.intro();
+  const C = Store.data.custom;
   openModal(`<h3>${room.title}</h3><p class="lead">${it.lead}</p>
     <ul class="how">${it.how.map(([i, t]) => `<li><span>${i}</span><span>${t}</span></li>`).join('')}</ul>
-    ${it.fields}
+    ${room.usesBoss ? `<div class="field"><div class="field-head"><span>상사 이름</span><button class="reset-btn" id="resetBtn">↺ 초기화</button></div>
+      <input id="bossInput" maxlength="12" placeholder="예: 김부장" value="${esc(Store.data.settings.boss)}">
+      <small>안 쓰면 '김부장'으로 나와요. 초기화를 누르면 상사 이름과 아래에 직접 쓴 내용이 모두 지워져요.</small></div>` : ''}
+    <div class="field"><span>✍️ ${room.custom.label} <em>(선택)</em></span>
+      <div class="addrow"><input id="customInput" maxlength="40" placeholder="${room.custom.ph}" enterkeyhint="done"><button class="add-btn" id="customAdd">추가</button></div>
+      <ul class="chips" id="customList"></ul>
+      <small>안 써도 어울리는 내용이 랜덤으로 계속 나와요. 직접 쓴 내용은 그 사이사이 '실제 상황'으로 자주 등장해요.</small></div>
     <div class="safety">⚠️ <b>폰을 꽉 쥐세요!</b> 손목 스트랩이 있으면 더 좋아요. 주변에 사람·물건이 없는지 확인하고, 세게 안 휘둘러도 충분히 인식돼요.</div>
     <div class="modal-actions"><button class="btn ghost" id="introCancel">취소</button><button class="btn brick nostud" id="introGo" style="--c:${room.color}">시작하기</button></div>`);
+  const renderChips = () => {
+    $('#customList').innerHTML = C[roomId].map((t, i) => `<li><span>${esc(t)}</span><button data-i="${i}" aria-label="삭제">✕</button></li>`).join('');
+    $$('#customList button').forEach((b) => (b.onclick = () => { C[roomId].splice(+b.dataset.i, 1); Store.save(); renderChips(); }));
+  };
+  const add = () => {
+    const inp = $('#customInput'); const v = inp.value.trim(); if (!v) return;
+    if (!C[roomId].includes(v)) { C[roomId].push(v); if (C[roomId].length > 30) C[roomId].shift(); }
+    Store.save(); inp.value = ''; renderChips();
+  };
+  renderChips();
+  $('#customAdd').onclick = add;
+  $('#customInput').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); add(); } });
+  if (room.usesBoss) {
+    $('#resetBtn').onclick = () => {
+      if (!confirm(`상사 이름과 '${room.title}'에 직접 쓴 내용을 모두 지울까요?`)) return;
+      Store.data.settings.boss = ''; C[roomId] = []; Store.save();
+      $('#bossInput').value = ''; renderChips(); renderLobby();
+      $('#resetBtn').textContent = '✓ 지웠어요';
+    };
+  }
   $('#introCancel').onclick = closeModal;
   $('#introGo').onclick = async () => {
-    if (it.before) it.before();
+    add();
+    if (room.usesBoss) { Store.data.settings.boss = $('#bossInput').value.trim(); Store.save(); }
     Sound.unlock();
     await Motion.request(); // iOS: 반드시 탭 직후에 권한 요청
     closeModal();
@@ -1136,14 +1229,16 @@ function showResult(res) {
   requestAnimationFrame(step);
   const on = Math.max(1, Math.round(res.stress / 10));
   $('#resBricks').innerHTML = Array.from({ length: 10 }, (_, i) => `<i class="${i < on ? 'on' : ''}" style="animation-delay:${i * 70}ms"></i>`).join('');
-  $('#resStat').textContent = room.stats(res);
+  const mine = res.mine || [];
+  $('#resStat').innerHTML = esc(room.stats(res)) + (mine.length
+    ? `<br><small style="font-family:'Gowun Dodum';color:var(--ink2)">직접 쓴 “${esc(mine[0])}”${mine.length > 1 ? ` 외 ${mine.length - 1}건` : ''}도 ${room.doneWord}!</small>` : '');
   const pool = COMFORT.find((c) => res.stress <= c.max).lines;
   $('#resComfort').textContent = pick(pool);
 }
 
 /* ----- 캘린더 ----- */
 const cal = { y: 0, m: 0, sel: null };
-const ROOM_NAME = { reject: '반려의 방', shred: '업무 파쇄기', resign: '사직서 던지기' };
+const ROOM_NAME = { reject: '결재 반려하기', shred: '업무 파쇄기', resign: '사직서 던지기' };
 function openCalendar() { const d = new Date(); cal.y = d.getFullYear(); cal.m = d.getMonth(); cal.sel = dayKey(d); renderCalendar(); show('calendar'); }
 function renderCalendar() {
   $('#calMonth').textContent = `${cal.y}년 ${cal.m + 1}월`;
