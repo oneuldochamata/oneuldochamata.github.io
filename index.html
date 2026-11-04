@@ -351,6 +351,82 @@ h1,h2,h3,.jua{font-family:'Jua',sans-serif;font-weight:400;margin:0}
 @keyframes bob{50%{transform:translate(-50%,-5px)}}
 @keyframes popUp{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-110%) scale(1)}}
 
+/* ================= 재미 요소 ================= */
+/* 로고: 떨어지며 등장, 누르면 타닥 */
+.logo{cursor:pointer}
+.kc{transition:transform .09s ease-out,box-shadow .09s;animation:keyDrop .6s cubic-bezier(.2,1.4,.4,1) backwards}
+.kc:nth-child(2){animation-delay:.13s}.kc:nth-child(3){animation-delay:.26s}
+.kc.press{transform:translateY(calc(var(--dy,0px) + var(--w)*.07)) rotate(var(--r,0)) scale(.98);box-shadow:0 calc(var(--w)*.01) 0 rgba(0,0,0,.28)}
+@keyframes keyDrop{from{transform:translateY(-150px) rotate(var(--r,0));opacity:0}}
+@keyframes angry{0%,100%{transform:scale(var(--ang,1))}50%{transform:scale(calc(var(--ang,1)*1.18)) rotate(8deg)}}
+.logo-top{animation:mutter 2.6s ease-in-out infinite}
+@keyframes mutter{0%,100%{transform:rotate(-5deg) translateX(-28%)}50%{transform:rotate(-2deg) translateX(-28%) translateY(-2px)}}
+/* 전광판 뉴스 */
+.ticker{align-self:center;width:100%;max-width:520px;height:38px;flex:0 0 38px;background:#26252e;border-radius:12px;overflow:hidden;display:flex;align-items:stretch;
+  box-shadow:inset 0 -4px 0 rgba(0,0,0,.45),0 3px 0 rgba(0,0,0,.08)}
+.ticker .tag{flex:0 0 auto;background:var(--red);color:#fff;font-family:'Jua';font-size:13px;padding:0 10px;display:grid;place-items:center;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{background:#b52c1e}}
+.ticker .track{flex:1;overflow:hidden;position:relative;-webkit-mask:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent);mask:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent)}
+.ticker .run{position:absolute;left:0;top:50%;white-space:nowrap;font-family:'Jua';font-size:15px;color:#ffd23f;text-shadow:0 0 8px rgba(255,210,63,.45);
+  animation:marquee var(--dur,40s) linear infinite}
+.ticker .run b{color:#ff8a7a;font-weight:400}
+@keyframes marquee{from{transform:translate(0,-50%)}to{transform:translate(-50%,-50%)}}
+/* 카드 등장 + 일러스트 움직임 */
+.room-card{animation:cardIn .5s cubic-bezier(.2,1.3,.4,1) backwards}
+.room-card:nth-child(2){animation-delay:.08s}.room-card:nth-child(3){animation-delay:.16s}
+@keyframes cardIn{from{transform:translateY(34px) scale(.96);opacity:0}}
+.room-card:active{transform:translateY(3px) scale(.98)}
+.ill-bob{transform-box:fill-box;transform-origin:50% 100%;animation:stampBob 2.2s ease-in-out infinite}
+@keyframes stampBob{0%,50%,100%{transform:translateY(0)}32%{transform:translateY(-7px) rotate(-5deg)}58%{transform:translateY(4px) scaleY(.9)}}
+.ill-ink{transform-box:fill-box;transform-origin:center;animation:inkPulse 2.2s ease-in-out infinite}
+@keyframes inkPulse{0%,54%{opacity:.35;transform:scale(.92)}60%{opacity:1;transform:scale(1.08)}70%,100%{opacity:1;transform:scale(1)}}
+.ill-feed{transform-box:fill-box;animation:feed 1.4s ease-in-out infinite}
+@keyframes feed{0%,100%{transform:translateY(-3px)}50%{transform:translateY(3px)}}
+.ill-strips{transform-box:fill-box;transform-origin:50% 0;animation:stripsJ .4s steps(2) infinite}
+@keyframes stripsJ{50%{transform:scaleY(1.1) translateX(1px)}}
+.ill-float{transform-box:fill-box;transform-origin:center;animation:floatE 1.8s ease-in-out infinite}
+@keyframes floatE{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(4px,-5px) rotate(5deg)}}
+.ill-lines{animation:linesF .9s linear infinite}
+@keyframes linesF{0%{opacity:.15;transform:translateX(5px)}50%{opacity:1}100%{opacity:.15;transform:translateX(-5px)}}
+/* 게임 중 파편 */
+.spark{position:absolute;width:9px;height:9px;border-radius:2px;pointer-events:none;z-index:13}
+/* FEVER */
+#game.fever .g-stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:9;mix-blend-mode:multiply;
+  background:linear-gradient(120deg,rgba(255,90,90,.22),rgba(255,210,63,.22),rgba(80,200,120,.22),rgba(80,140,255,.22),rgba(180,100,255,.22),rgba(255,90,90,.22));
+  background-size:200% 100%;animation:feverBg .9s linear infinite}
+@keyframes feverBg{to{background-position:150% 0}}
+.fever-banner{position:absolute;left:0;right:0;top:36%;z-index:16;text-align:center;pointer-events:none;font-family:'Jua';font-size:48px;line-height:1.1;color:#fff;
+  -webkit-text-stroke:2px var(--ink);text-shadow:0 5px 0 var(--ink);animation:feverIn 1.3s ease-out forwards}
+.fever-banner small{display:inline-block;font-size:18px;-webkit-text-stroke:0;text-shadow:none;color:var(--ink);background:#ffd23f;padding:3px 14px;border-radius:999px;margin-top:6px}
+@keyframes feverIn{0%{transform:translateX(-110%) skewX(-12deg)}18%{transform:translateX(0) skewX(-12deg)}80%{transform:translateX(0) skewX(-12deg);opacity:1}100%{transform:translateX(110%) skewX(-12deg);opacity:0}}
+.pill.fever{background:linear-gradient(90deg,#ff5d4a,#ffb02e);color:#fff;box-shadow:inset 0 -3px 0 rgba(0,0,0,.2);animation:pulse .25s infinite alternate}
+/* 야근 모드 (마지막 5초) */
+#game.hurry .g-stage::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:8;animation:hurryPulse .9s ease-in-out infinite}
+@keyframes hurryPulse{0%,100%{box-shadow:inset 0 0 0 0 rgba(227,65,47,0)}50%{box-shadow:inset 0 0 70px 14px rgba(227,65,47,.45)}}
+.g-overlay .big.go{font-size:66px}
+.g-overlay .sub{display:block;font-size:20px;-webkit-text-stroke:0;text-shadow:none;color:var(--ink);text-align:center}
+/* 상사가 점점 지침 */
+.fig .tear{position:absolute;top:29px;width:5px;height:0;background:#7cc6ff;border-radius:3px;opacity:0}
+.fig .tear.l{left:14px}.fig .tear.r{right:14px}
+.fig.lv1 .sweat{animation:sweatLoop 1.1s ease-in infinite}
+@keyframes sweatLoop{0%{transform:translateY(-4px);opacity:0}30%{opacity:1}100%{transform:translateY(12px);opacity:0}}
+.fig.lv2 .tear{animation:tears .9s ease-in infinite}
+@keyframes tears{0%{height:0;opacity:1}70%{height:15px;opacity:1}100%{height:17px;opacity:0}}
+.fig.lv2 .fig-hair{transform:rotate(-7deg) translateY(-2px);border-radius:18px 8px 5px 12px}
+.fig.lv2 .fig-hair::after{content:"";position:absolute;right:8px;top:-8px;width:11px;height:11px;border:3px solid #3b2f2a;border-left-color:transparent;border-bottom-color:transparent;border-radius:50%}
+.fig.lv2:not(.shock) .mouth{width:13px;height:6px;margin-left:-6.5px;border-radius:7px 7px 0 0;background:transparent;border:3px solid var(--ink);border-bottom:0}
+/* 결과: 칭호 도장, 꽃가루, 토스트 */
+.res-rank{display:inline-block;margin:16px 0 0;font-family:'Jua';font-size:21px;color:var(--rc);border:4px double var(--rc);border-radius:12px;padding:5px 16px;
+  transform:rotate(-6deg);background:#fff;visibility:hidden}
+.res-rank.show{visibility:visible;animation:rankIn .3s cubic-bezier(.3,1.6,.5,1)}
+@keyframes rankIn{from{transform:rotate(-6deg) scale(2.6);opacity:0}}
+.confetti{position:fixed;top:-20px;width:9px;height:14px;border-radius:2px;z-index:60;pointer-events:none;animation:confFall linear forwards}
+@keyframes confFall{to{transform:translate(var(--dx),110vh) rotate(var(--rot))}}
+.toast{position:fixed;left:50%;bottom:calc(28px + var(--safe-b));background:var(--ink);color:#fff;border-radius:999px;padding:11px 18px;font-size:14px;z-index:70;
+  pointer-events:none;white-space:nowrap;animation:toastA 2.3s ease forwards}
+@keyframes toastA{0%{opacity:0;transform:translate(-50%,12px)}10%,85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,0)}}
+@media (prefers-reduced-motion:reduce){.ticker .run{animation-duration:120s}.ill-bob,.ill-ink,.ill-feed,.ill-strips,.ill-float,.ill-lines,.logo-top{animation:none}}
+
 .vh{position:fixed;left:-100px;top:0;width:1px;height:1px;opacity:0;pointer-events:none}
 @media (prefers-reduced-motion:reduce){#game.shake,#game.shake-s{animation:none}}
 </style>
@@ -365,37 +441,38 @@ h1,h2,h3,.jua{font-family:'Jua',sans-serif;font-weight:400;margin:0}
     <button class="icon-btn settings-btn" id="settingsBtn" aria-label="설정">⚙️</button>
   </header>
   <div class="today-chip" id="todayChip"></div>
+  <div class="ticker" aria-hidden="true"><span class="tag">속보</span><div class="track"><div class="run" id="tickerRun"></div></div></div>
   <div class="room-list">
     <button class="room-card brick nostud" data-room="reject" style="--c:var(--red)">
       <div class="rc-icon"><svg viewBox="0 0 80 80" aria-hidden="true">
-          <g transform="rotate(-9 40 60)"><rect x="13" y="47" width="54" height="25" rx="5" fill="none" stroke="#d8262a" stroke-width="3.2"/>
-            <text x="40" y="66.5" text-anchor="middle" font-family="Jua" font-size="16" letter-spacing="4" fill="#d8262a">반려</text></g>
+          <g class="ill-ink"><g transform="rotate(-9 40 60)"><rect x="13" y="47" width="54" height="25" rx="5" fill="none" stroke="#d8262a" stroke-width="3.2"/>
+            <text x="40" y="66.5" text-anchor="middle" font-family="Jua" font-size="16" letter-spacing="4" fill="#d8262a">반려</text></g></g>
           <circle cx="16" cy="44" r="2.2" fill="#d8262a"/><circle cx="68" cy="50" r="1.8" fill="#d8262a"/>
-          <g transform="rotate(14 48 24)"><ellipse cx="48" cy="6" rx="9.5" ry="7" fill="#8a5a36"/><ellipse cx="45" cy="4" rx="3.5" ry="2" fill="#b58258"/>
+          <g class="ill-bob"><g transform="rotate(14 48 24)"><ellipse cx="48" cy="6" rx="9.5" ry="7" fill="#8a5a36"/><ellipse cx="45" cy="4" rx="3.5" ry="2" fill="#b58258"/>
             <rect x="44" y="11" width="8" height="12" rx="2" fill="#a86e43"/><rect x="33" y="22" width="30" height="14" rx="5" fill="#c4875a"/>
-            <rect x="33" y="31" width="30" height="5" rx="2" fill="#a86e43"/><rect x="32" y="35" width="32" height="6" rx="2" fill="#d8262a"/></g>
-          <path d="M70 18l6-4M72 28h7M66 10l3-6" stroke="#f2b8b0" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+            <rect x="33" y="31" width="30" height="5" rx="2" fill="#a86e43"/><rect x="32" y="35" width="32" height="6" rx="2" fill="#d8262a"/></g></g>
+          <path class="ill-lines" d="M70 18l6-4M72 28h7M66 10l3-6" stroke="#f2b8b0" stroke-width="2.6" stroke-linecap="round"/></svg></div>
       <div class="rc-text"><h2>결재 반려하기</h2><p>상사가 올린 결재, 전부 반려!</p><span class="rc-how">📳 도장 찍듯 쾅! 내려찍기</span></div>
     </button>
     <button class="room-card brick nostud" data-room="shred" style="--c:var(--blue)">
       <div class="rc-icon"><svg viewBox="0 0 80 80" aria-hidden="true">
-          <g transform="rotate(-7 40 16)"><rect x="23" y="1" width="34" height="27" rx="2.5" fill="#fff" stroke="#cfc4b2" stroke-width="1.6"/>
-            <rect x="28" y="7" width="14" height="4" rx="2" fill="#e3412f"/><rect x="28" y="14" width="24" height="2.6" rx="1.3" fill="#ddd"/><rect x="28" y="19" width="18" height="2.6" rx="1.3" fill="#ddd"/></g>
+          <g class="ill-feed"><g transform="rotate(-7 40 16)"><rect x="23" y="1" width="34" height="27" rx="2.5" fill="#fff" stroke="#cfc4b2" stroke-width="1.6"/>
+            <rect x="28" y="7" width="14" height="4" rx="2" fill="#e3412f"/><rect x="28" y="14" width="24" height="2.6" rx="1.3" fill="#ddd"/><rect x="28" y="19" width="18" height="2.6" rx="1.3" fill="#ddd"/></g></g>
           <rect x="8" y="24" width="64" height="26" rx="7" fill="#2f6fd6"/><rect x="8" y="43" width="64" height="7" rx="3.5" fill="#1f4fa6"/>
           <rect x="16" y="21.5" width="48" height="5.5" rx="2.75" fill="#1a1d29"/>
           <circle cx="58" cy="34" r="3.2" fill="#7dff9a"/><circle cx="49" cy="34" r="3.2" fill="#ffd23f"/>
-          <g stroke-linecap="round" stroke-width="3.4"><path d="M19 53v14" stroke="#fff"/><path d="M26 53q2 8-1 19" stroke="#fff3b0"/><path d="M33 53v11" stroke="#fff"/>
+          <g class="ill-strips" stroke-linecap="round" stroke-width="3.4"><path d="M19 53v14" stroke="#fff"/><path d="M26 53q2 8-1 19" stroke="#fff3b0"/><path d="M33 53v11" stroke="#fff"/>
             <path d="M40 53q-2 9 1 21" stroke="#ffd6e0"/><path d="M47 53v15" stroke="#fff"/><path d="M54 53q2 6 0 12" stroke="#cfe2ff"/><path d="M61 53v17" stroke="#fff"/></g>
           <g stroke="#c9d6ec" stroke-width="2" stroke-linecap="round"><path d="M3 29l3 2M2 38h4M77 29l-3 2M78 38h-4"/></g></svg></div>
       <div class="rc-text"><h2>업무 파쇄기</h2><p>쏟아지는 업무를 모두 갈갈갈!</p><span class="rc-how">📳 마구 흔들어 터보 가동</span></div>
     </button>
     <button class="room-card brick nostud" data-room="resign" style="--c:var(--purple)">
       <div class="rc-icon"><svg viewBox="0 0 80 80" aria-hidden="true">
-          <path d="M3 34h13M1 45h15M6 56h9" stroke="#cbbcf2" stroke-width="3.2" stroke-linecap="round"/>
-          <g transform="rotate(-13 47 41)"><rect x="25" y="8" width="44" height="66" rx="4" fill="#fff" stroke="#cfc4b2" stroke-width="1.6"/>
+          <path class="ill-lines" d="M3 34h13M1 45h15M6 56h9" stroke="#cbbcf2" stroke-width="3.2" stroke-linecap="round"/>
+          <g class="ill-float"><g transform="rotate(-13 47 41)"><rect x="25" y="8" width="44" height="66" rx="4" fill="#fff" stroke="#cfc4b2" stroke-width="1.6"/>
             <path d="M25.5 12L47 27L68.5 12" fill="none" stroke="#e6dccb" stroke-width="2.2" stroke-linejoin="round"/>
             <g font-family="Black Han Sans" font-size="13" text-anchor="middle" fill="#2b2a33"><text x="47" y="42">사</text><text x="47" y="55">직</text><text x="47" y="68">서</text></g>
-            <circle cx="61" cy="66" r="4.2" fill="#d8262a"/></g></svg></div>
+            <circle cx="61" cy="66" r="4.2" fill="#d8262a"/></g></g></svg></div>
       <div class="rc-text"><h2>사직서 던지기</h2><p>품어왔던 사직서, 오늘은 던진다!</p><span class="rc-how">📳 공 던지듯 휙!</span></div>
     </button>
   </div>
@@ -425,12 +502,14 @@ h1,h2,h3,.jua{font-family:'Jua',sans-serif;font-weight:400;margin:0}
     <h2 class="res-title" id="resTitle"></h2>
     <div class="res-bricks" id="resBricks"></div>
     <div class="res-scale"><span>0%</span><span>50%</span><span>100%</span></div>
+    <div class="res-rank" id="resRank"></div>
     <p class="res-stat" id="resStat"></p>
     <p class="res-comfort" id="resComfort"></p>
   </div>
   <div class="res-actions">
     <button class="btn brick nostud" id="againBtn" style="--c:var(--ink)">한 번 더</button>
     <button class="btn ghost" id="homeBtn">다른 게임 하기</button>
+    <button class="btn brick nostud wide" id="shareBtn" style="--c:var(--orange)">📤 오늘의 스트레스 자랑하기</button>
     <button class="btn brick nostud wide" id="resCalBtn" style="--c:var(--green)">📅 스트레스 캘린더 보기</button>
   </div>
 </section>
@@ -542,6 +621,9 @@ const Sound = {
     else { this.noise(0.06, { freq: 1200, gain: 0.25 }); }
   },
   tick() { this.tone(900, 880, 0.06, { type: 'square', gain: 0.08 }); },
+  key() { this.noise(0.035, { type: 'highpass', freq: 2500, gain: 0.25 }); this.tone(1700, 1100, 0.04, { type: 'square', gain: 0.05 }); this.tone(160, 90, 0.06, { gain: 0.25 }); },
+  boing() { this.tone(260, 900, 0.18, { type: 'triangle', gain: 0.22 }); this.tone(900, 420, 0.2, { type: 'triangle', gain: 0.15, delay: 0.16 }); },
+  fever() { [523, 659, 784, 1047, 1319].forEach((f, i) => this.tone(f, f * 1.01, 0.12, { type: 'square', gain: 0.07, delay: i * 0.055 })); },
   go() { this.tone(660, 1320, 0.25, { type: 'triangle', gain: 0.25 }); },
   end() { [523, 659, 784, 1047].forEach((f, i) => this.tone(f, f, 0.35, { type: 'triangle', gain: 0.18, delay: i * 0.09 })); },
   motorSet(p) {
@@ -654,6 +736,7 @@ const Game = {
     $('#gCount').textContent = `${room.unit} 0`;
     $('#gTimer').textContent = fmt(this.timeLeft); $('#gTimer').classList.remove('hurry');
     $('#gProg').style.transform = 'scaleX(1)';
+    this.fever = false; this.feverEnd = 0; $('#game').classList.remove('fever', 'hurry'); $('#gCount').classList.remove('fever');
     stage.innerHTML = '';
     room.mount(stage);
     this.setHint();
@@ -677,9 +760,9 @@ const Game = {
   countdown() {
     return new Promise((res) => {
       const ov = $('#gOverlay'); ov.classList.add('show');
-      const seq = ['3', '2', '1', '시작!'];
+      const seq = ['3', '2', '1', '참지 마!'];
       seq.forEach((s, i) => this.later(() => {
-        ov.innerHTML = `<div class="big">${s}</div>`;
+        ov.innerHTML = i < 3 ? `<div class="big">${s}<span class="sub">${['출근 준비…', '심호흡…', '꾹…'][i]}</span></div>` : `<div class="big go">${s}</div>`;
         if (i < 3) Sound.tick(); else Sound.go();
       }, i * 620));
       this.later(() => { ov.classList.remove('show'); ov.innerHTML = ''; res(); }, seq.length * 620);
@@ -693,7 +776,7 @@ const Game = {
       const now = Math.ceil(this.timeLeft);
       $('#gTimer').textContent = fmt(now);
       $('#gProg').style.transform = `scaleX(${this.timeLeft / this.duration})`;
-      if (now <= 5 && now !== prev && now > 0) { $('#gTimer').classList.add('hurry'); Sound.tick(); }
+      if (now <= 5 && now !== prev && now > 0) { $('#gTimer').classList.add('hurry'); $('#game').classList.add('hurry'); Sound.tick(); }
       if (this.room.tick) this.room.tick(dt);
       if (this.timeLeft <= 0) { this.finish(); return; }
     }
@@ -710,6 +793,24 @@ const Game = {
       const c = $('#combo'); c.textContent = label || `COMBO ×${this.comboN}`;
       c.classList.remove('show'); void c.offsetWidth; c.classList.add('show');
     }
+    if (this.comboN >= 8 && !this.fever && now - this.feverEnd > 3000) this.startFever();
+    // 많이 당할수록 상사가 점점 지쳐요
+    const fig = $('.fig', stage);
+    if (fig) {
+      const [a, b] = this.room.frazzle || [8, 18];
+      fig.classList.toggle('lv1', this.count >= a); fig.classList.toggle('lv2', this.count >= b);
+      if (this.count === a || this.count === b) {
+        Game.later(() => bossReact(fig.closest('.boss-wrap'), this.count >= b ? pick(['흑흑… 그만…', '제발 한 번만…', '😭😭', '집에 가고 싶다…']) : pick(['땀이 나네…', '오늘 왜 이래…', '흠흠…']), 'sad'), 350);
+      }
+    }
+  },
+  startFever() {
+    this.fever = true;
+    const g = $('#game'); g.classList.add('fever'); $('#gCount').classList.add('fever');
+    const b = el('div', 'fever-banner', 'FEVER!!<br><small>참지 마! 계속 가!</small>'); g.appendChild(b);
+    Sound.fever(); haptic(90);
+    this.later(() => b.remove(), 1400);
+    this.later(() => { this.fever = false; this.feverEnd = performance.now(); g.classList.remove('fever'); $('#gCount').classList.remove('fever'); }, 5000);
   },
   shake(strong) { const g = $('#game'); const c = strong ? 'shake' : 'shake-s'; g.classList.remove('shake', 'shake-s'); void g.offsetWidth; g.classList.add(c); },
   cleanup() {
@@ -721,6 +822,7 @@ const Game = {
     Sound.motorStop();
     try { this.wake && this.wake.release(); } catch (e) { /* noop */ } this.wake = null;
     $('#gOverlay').classList.remove('show'); $('#gOverlay').innerHTML = '';
+    $('#game').classList.remove('fever', 'hurry'); $('#gCount').classList.remove('fever'); $$('.fever-banner').forEach((x) => x.remove());
   },
   finish() {
     const room = this.room;
@@ -752,7 +854,7 @@ const fmt = (s) => `0:${pad(Math.max(0, Math.ceil(s)))}`;
 function bossHTML(name) {
   return `<div class="bubble"></div>
   <div class="fig"><div class="fig-hair"></div>
-    <div class="fig-head"><i class="brow l"></i><i class="brow r"></i><i class="eye l"></i><i class="eye r"></i><i class="mouth"></i><i class="sweat"></i></div>
+    <div class="fig-head"><i class="brow l"></i><i class="brow r"></i><i class="eye l"></i><i class="eye r"></i><i class="mouth"></i><i class="sweat"></i><i class="tear l"></i><i class="tear r"></i></div>
     <div class="fig-body"><i></i></div></div>
   <div class="nameplate">${esc(name)}</div>`;
 }
@@ -763,6 +865,17 @@ function bossReact(wrap, line, mood = 'shock', jump = false) {
   clearTimeout(fig._t); fig._t = setTimeout(() => fig.classList.remove('shock', 'sad', 'jump'), 900);
   if (line) { b.textContent = line; b.classList.remove('show'); void b.offsetWidth; b.classList.add('show'); }
 }
+function sparks(parent, x, y, colors, n = 10, spread = 90) {
+  for (let i = 0; i < n; i++) {
+    const s = el('i', 'spark'); s.style.left = `${x}px`; s.style.top = `${y}px`; s.style.background = pick(colors);
+    parent.appendChild(s);
+    const a = rand(0, Math.PI * 2), d = rand(spread * 0.4, spread);
+    s.animate([{ transform: 'translate(-50%,-50%) scale(1)', opacity: 1 },
+      { transform: `translate(calc(-50% + ${Math.cos(a) * d}px), calc(-50% + ${Math.sin(a) * d + 30}px)) rotate(${rand(-360, 360)}deg) scale(.4)`, opacity: 0 }],
+      { duration: rand(450, 800), easing: 'cubic-bezier(.2,.8,.4,1)' }).onfinish = () => s.remove();
+  }
+}
+function toast(msg) { const t = el('div', 'toast'); t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2400); }
 function pop(parent, x, y, text, size, color) {
   const p = el('div', 'pop'); p.textContent = text;
   p.style.cssText = `left:${x}px;top:${y}px;font-size:${size}px;color:${color}`;
@@ -857,6 +970,9 @@ const Reject = {
       d.appendChild(k);
     }
     Sound.stamp(intensity); haptic(fromMotion ? 40 : 25);
+    { const sr = st.getBoundingClientRect(), gr = stage.getBoundingClientRect(); const cx = sr.left + sr.width / 2 - gr.left, cy = sr.top + sr.height / 2 - gr.top;
+      sparks(stage, cx, cy, ['#d8262a', '#ff6b5e', '#ffffff'], 6 + Math.round(intensity * 10), 70 + intensity * 60);
+      if (intensity > 0.45 || Math.random() < 0.35) pop(stage, clamp(cx + rand(-60, 60), 60, gr.width - 60), cy - 70, pick(['반려!', '쾅!', 'NO!', '다시 해 와!', '빠꾸!', '안 돼!']), 30 + intensity * 18, 'var(--stamp)'); }
     if (intensity > 0.6) Game.shake(intensity > 0.85); else Game.shake(false);
     Game.best = Math.max(Game.best, intensity);
     if (this.docMine) Game.mine.add(this.docMine);
@@ -951,6 +1067,9 @@ const Shred = {
       const dur = 420 * speed + 120;
       p.animate([{ transform: `translate(${dx}px,${dy}px)`, clipPath: 'inset(0 0 0 0)' }, { transform: `translate(${dx}px,${dy + h}px)`, clipPath: `inset(0 0 ${h}px 0)` }], { duration: dur, easing: 'linear', fill: 'forwards' }).onfinish = () => p.remove();
       Sound.shred(this.power); haptic(30);
+      const sx = slot.left + slot.width / 2 - rr.left + rand(-50, 50), sy = slot.top - rr.top;
+      sparks(this.root, sx, sy, ['#ffffff', '#fff3b0', '#cfe2ff', '#ffd6e0'], 5 + Math.round(this.power * 6), 55);
+      if (Math.random() < 0.55) pop(this.root, clamp(sx, 60, rr.width - 60), sy - 34, pick(['갈갈갈!', '와작!', '드르륵!', '삭제!', '꿀꺽!']), 22 + this.power * 12, 'var(--blue)');
       this.strips(p.style.getPropertyValue('--pc') || '#fff', dur);
     };
     const e = 1 + this.power * 1.2;
@@ -1011,6 +1130,7 @@ const RESIGN_LINES = ['일신상의 사유로 퇴사하고자 합니다', '제 �
   '"잠깐 얘기 좀" 이 무섭습니다', '저 그냥 자연인 하겠습니다', '야근이 기본값이 되어 버렸습니다', '제 멘탈은 연차가 없습니다', '보고서의 보고서는 그만 쓰고 싶습니다'];
 const BOSS_LINES_T = ['헉!', '이게 뭐야?!', '자… 잠깐만!', '다시 생각해 봐…', '연봉 얘기 좀 할까?', '우리 대화로 풀자…', '커피 한 잔 할래…?', '이번 주만 버텨줘…', '내 책상이…!', '😱'];
 const Resign = {
+  frazzle: [5, 12],
   id: 'resign', title: '사직서 던지기', unit: '투척', duration: 40, K: 40, color: 'var(--purple)', usesBoss: true, doneWord: '투척 완료',
   custom: { label: '사직서에 쓸 사유 직접 쓰기', ph: '예: 주말 출근이 당연해졌습니다' },
   hintMotion: '폰을 꽉 쥐고 <b>공 던지듯 앞으로 휙!</b> (놓치지 않게 조심)', hintTouch: '사직서를 <b>위로 휙</b> 밀어 올려 던져요',
@@ -1099,6 +1219,7 @@ const Resign = {
       this.desk.classList.remove('bump'); void this.desk.offsetWidth; this.desk.classList.add('bump');
       bossReact(this.boss, pick(BOSS_LINES_T), 'shock', true);
       pop(this.root, Math.min(x + 90, this.root.clientWidth - 70), y + 10, '명중!!', 46, 'var(--red)');
+      sparks(this.root, x, y, ['#ffffff', '#e3412f', '#ffd23f', '#7a5cd6'], 16, 110);
       for (let i = 0; i < 8; i++) {
         const f = el('i', 'flyer'); f.style.left = `${x}px`; f.style.top = `${y}px`; this.root.appendChild(f);
         const ang = rand(-Math.PI, 0), dist = rand(60, 140);
@@ -1130,7 +1251,36 @@ function dayStats(key) {
   const list = Store.data.sessions.filter((s) => s.day === key);
   return list.length ? { max: Math.max(...list.map((s) => s.stress)), n: list.length, list } : null;
 }
+const NEWS = ['[속보] {b}, 퇴근 5분 전 회의 소집 예정', '[단독] 오늘 점심 메뉴, 또 {b} 마음대로', '[날씨] 사무실 분노 지수 "매우 높음"… 우산 대신 사직서 지참 요망',
+  '[경제] 내 월급, 물가 상승률에 3년 연속 패배', '[사회] "잠깐 얘기 좀" 한마디에 직장인 심박수 급상승', '[스포츠] 금요일 6시 퇴근 100m 달리기, 신기록 기대',
+  '[연예] 최종_진짜최종.pptx, 7번째 버전으로 컴백', '[생활] 전문가 "참는 것도 체력… 오늘은 일찍 자야"', '[IT] 단톡방 알림, 퇴근 후에만 3배 증가 확인', '[속보] {b}, "이거 간단한 거야" 발언 또 나와'];
+function renderTicker() {
+  const mine = [...Store.data.custom.reject, ...Store.data.custom.shred].slice(-3).map((t) => `[제보] ${t}`);
+  const items = [...NEWS.map((n) => n.replace('{b}', Store.boss)), ...mine].sort(() => Math.random() - 0.5);
+  const sep = '&nbsp;&nbsp;&nbsp;●&nbsp;&nbsp;&nbsp;';
+  const one = items.map((t) => esc(t).replace(/^\[(.+?)\]/, '<b>[$1]</b>')).join(sep) + sep;
+  const run = $('#tickerRun'); run.innerHTML = one + one;
+  run.style.setProperty('--dur', `${Math.max(30, items.join('').length * 0.3)}s`);
+}
+let angerN = 0;
+function bindLogo() {
+  const logo = $('#logoSlot .logo'); if (!logo) return;
+  const keys = $$('.kc', logo), anger = $('.anger', logo);
+  const press = (k) => { k.classList.add('press'); setTimeout(() => k.classList.remove('press'), 120); };
+  logo.addEventListener('pointerdown', (e) => {
+    Sound.unlock();
+    press(e.target.closest('.kc') || pick(keys)); Sound.key(); haptic(8);
+    angerN++;
+    anger.style.setProperty('--ang', String(Math.min(1.8, 1 + angerN * 0.09)));
+    if (angerN >= 10) {
+      angerN = 0; anger.style.setProperty('--ang', '1');
+      keys.forEach((k, i) => setTimeout(() => { press(k); Sound.key(); }, 120 + i * 110));
+      Sound.boing(); toast(pick(['…그래도 참았다.', '후우… 오늘도 참았다.', '참을 인(忍) 세 번 완료', '부글부글… 아니야 괜찮아']));
+    }
+  });
+}
 function renderLobby() {
+  renderTicker();
   const t = dayStats(dayKey());
   const chip = $('#todayChip');
   chip.innerHTML = t
@@ -1208,10 +1358,24 @@ function openSettings() {
 }
 
 /* ----- 결과 ----- */
-let lastRoom = 'reject';
+let lastRoom = 'reject', lastRes = null;
+const RANKS = [{ max: 29, t: '🧘 해탈한 직장인', c: 'var(--green)' }, { max: 59, t: '☕ 평범한 직장인', c: '#c38a00' },
+  { max: 84, t: '🔥 폭발 직전', c: 'var(--orange)' }, { max: 100, t: '🌋 퇴사 각성자', c: 'var(--red)' }];
+const rankOf = (p) => RANKS.find((r) => p <= r.max);
+function confetti(n = 70) {
+  const colors = ['#e3412f', '#f6c026', '#2f6fd6', '#38a85a', '#7a5cd6', '#f28c28'];
+  for (let i = 0; i < n; i++) {
+    const c = el('i', 'confetti'); c.style.left = `${rand(0, 100)}vw`; c.style.background = pick(colors);
+    c.style.setProperty('--dx', `${rand(-90, 90)}px`); c.style.setProperty('--rot', `${rand(-720, 720)}deg`);
+    c.style.animationDuration = `${rand(1.8, 3.2)}s`; c.style.animationDelay = `${rand(0, 0.5)}s`;
+    document.body.appendChild(c); setTimeout(() => c.remove(), 4000);
+  }
+}
 function showResult(res) {
-  const room = ROOMS[res.room]; lastRoom = res.room;
+  const room = ROOMS[res.room]; lastRoom = res.room; lastRes = res;
   show('result');
+  const rk = $('#resRank'); rk.classList.remove('show');
+  $('#shareBtn').style.display = res.count ? '' : 'none';
   const lv = levelOf(res.stress);
   const card = $('.res-card'); card.style.setProperty('--lvc', `var(--lv${lv})`);
   const tag = $('#resRoom'); tag.textContent = room.title; tag.style.background = room.color;
@@ -1234,7 +1398,21 @@ function showResult(res) {
     ? `<br><small style="font-family:'Gowun Dodum';color:var(--ink2)">직접 쓴 “${esc(mine[0])}”${mine.length > 1 ? ` 외 ${mine.length - 1}건` : ''}도 ${room.doneWord}!</small>` : '');
   const pool = COMFORT.find((c) => res.stress <= c.max).lines;
   $('#resComfort').textContent = pick(pool);
+  const r = rankOf(res.stress); rk.textContent = r.t; rk.style.setProperty('--rc', r.c);
+  setTimeout(() => {
+    if (lastRes !== res) return;
+    rk.classList.add('show'); Sound.stamp(0.6); haptic(30);
+    if (res.stress >= 60) confetti(); else confetti(28);
+  }, 1000);
 }
+$('#shareBtn').onclick = async () => {
+  if (!lastRes) return;
+  const room = ROOMS[lastRes.room];
+  const text = `오늘의 스트레스 ${lastRes.stress}% (${rankOf(lastRes.stress).t})\n${room.title}에서 ${room.unit} ${lastRes.count}번으로 풀었어요 💢\n#오늘도참았다`;
+  const url = location.href.split(/[?#]/)[0];
+  try { if (navigator.share) { await navigator.share({ title: '오늘도 참았다', text, url }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
+  try { await navigator.clipboard.writeText(`${text}\n${url}`); toast('복사했어요! 붙여넣어 자랑하세요'); } catch (e) { toast('이 브라우저에선 공유가 안 돼요'); }
+};
 
 /* ----- 캘린더 ----- */
 const cal = { y: 0, m: 0, sel: null };
@@ -1274,7 +1452,7 @@ function renderCalendar() {
 }
 
 /* ================= 이벤트 연결 ================= */
-$$('.room-card').forEach((b) => (b.onclick = () => openIntro(b.dataset.room)));
+$$('.room-card').forEach((b) => (b.onclick = () => { Sound.unlock(); Sound.key(); openIntro(b.dataset.room); }));
 $('#settingsBtn').onclick = openSettings;
 $('#calBtn').onclick = openCalendar;
 $('#exitBtn').onclick = () => Game.quit();
@@ -1289,6 +1467,7 @@ let hintShown = false;
 Motion.on(() => { if (!hintShown && Game.room && Motion.receiving) { hintShown = true; Game.setHint(); } });
 document.addEventListener('visibilitychange', () => { if (document.hidden) Sound.motorStop(); });
 
+bindLogo();
 renderLobby();
 // 테스트용 훅
 window.__office = { Game, Motion, Store, ROOMS };
