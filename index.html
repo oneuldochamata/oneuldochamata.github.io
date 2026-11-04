@@ -477,7 +477,7 @@ h1,h2,h3,.jua{font-family:'Jua',sans-serif;font-weight:400;margin:0}
     </button>
   </div>
   <button class="btn brick nostud" id="calBtn" style="--c:var(--green)">📅 스트레스 캘린더</button>
-  <p class="foot">모든 사용 기록은 본 기기에만 저장됩니다.</p>
+  <p class="foot">모든 사용 기록은 본 기기에만 저장됩니다.<br>서비스 개선을 위해 개인을 알 수 없는 익명 이용 통계만 수집해요.</p>
 </section>
 
 <!-- ===== 게임 ===== -->
@@ -533,6 +533,7 @@ h1,h2,h3,.jua{font-family:'Jua',sans-serif;font-weight:400;margin:0}
 <div class="modal-bg" id="modalBg"><div class="modal" id="modal" role="dialog" aria-modal="true"></div></div>
 <label class="vh" id="hapticLabel" aria-hidden="true"><input type="checkbox" switch tabindex="-1"></label>
 
+<script src="analytics-config.js"></script>
 <script>
 (() => {
 'use strict';
@@ -578,6 +579,41 @@ const Store = {
   get boss() { return (this.data.settings.boss || '').trim() || '김부장'; },
 };
 Store.load();
+
+/* ================= 익명 이용 통계 (상사 이름·직접 쓴 내용은 절대 보내지 않음) ================= */
+const Track = (() => {
+  const cfg = window.OC_ANALYTICS || {};
+  const isLocal = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && !params.has('track');
+  const on = !!(cfg.url && cfg.key) && !isLocal && navigator.doNotTrack !== '1';
+  const rid = () => (window.crypto && crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+  let vid, sid, returning = false;
+  try { vid = localStorage.getItem('oc_vid'); returning = !!vid; if (!vid) { vid = rid(); localStorage.setItem('oc_vid', vid); } } catch (e) { vid = rid(); }
+  try { sid = sessionStorage.getItem('oc_sid'); if (!sid) { sid = rid(); sessionStorage.setItem('oc_sid', sid); } } catch (e) { sid = rid(); }
+  const headers = { apikey: cfg.key, 'Content-Type': 'application/json', Prefer: 'return=minimal' };
+  if (cfg.key && !String(cfg.key).startsWith('sb_')) headers.Authorization = `Bearer ${cfg.key}`;
+  const ev = (name, room = null, value = null, props = {}) => {
+    if (!on) return;
+    try {
+      fetch(`${String(cfg.url).replace(/\/$/, '')}/rest/v1/events`, { method: 'POST', keepalive: true, headers, body: JSON.stringify({ vid, sid, name, room, value, props }) }).catch(() => {});
+    } catch (e) { /* noop */ }
+  };
+  // 이용 시간: 화면이 보이는 동안만 1초씩 셈 → 30초마다, 그리고 화면을 떠날 때 전송
+  let active = 0, sent = 0;
+  setInterval(() => { if (!document.hidden) { active++; if (active - sent >= 30) { sent = active; ev('hb', null, active); } } }, 1000);
+  const leave = () => { if (active > sent) { sent = active; ev('leave', null, active); } };
+  document.addEventListener('visibilitychange', () => { if (document.hidden) leave(); });
+  window.addEventListener('pagehide', leave);
+  const pageView = () => {
+    const ua = navigator.userAgent;
+    const device = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ? 'iOS' : /android/i.test(ua) ? 'Android' : /mobile/i.test(ua) ? '기타 모바일' : 'PC';
+    const inapp = /Instagram/i.test(ua) ? '인스타그램' : /KAKAOTALK/i.test(ua) ? '카카오톡' : /FBAN|FBAV/i.test(ua) ? '페이스북' : /NAVER\(/i.test(ua) ? '네이버 앱' : /Threads/i.test(ua) ? '스레드' : '';
+    let ref = ''; try { ref = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : ''; } catch (e) { /* noop */ }
+    if (ref === location.hostname) ref = '';
+    const standalone = window.matchMedia?.('(display-mode: standalone)').matches || navigator.standalone === true;
+    ev('page_view', null, null, { device, src: params.get('utm_source') || inapp || ref, standalone: !!standalone, w: screen.width, returning });
+  };
+  return { ev, pageView, on };
+})();
 
 /* ================= 사운드 (Web Audio 합성) ================= */
 const Sound = {
@@ -729,7 +765,7 @@ const Game = {
   every(fn, ms) { const id = setInterval(fn, ms); this.timers.push(id); return id; },
   async start(roomId) {
     const room = ROOMS[roomId];
-    this.room = room; this.running = false; this.energy = 0; this.count = 0; this.best = 0; this.comboN = 0; this.mine = new Set();
+    this.room = room; this.running = false; this.energy = 0; this.count = 0; this.best = 0; this.comboN = 0; this.mine = new Set(); this.feverN = 0;
     this.duration = DEBUG_DUR || room.duration; this.timeLeft = this.duration;
     show('game');
     $('#gTitle').textContent = room.title;
@@ -750,6 +786,7 @@ const Game = {
     await this.countdown();
     if (this.room !== room) return;
     this.running = true;
+    Track.ev('game_start', room.id, null, { custom: (Store.data.custom[room.id] || []).length, boss: !!Store.data.settings.boss });
   },
   setHint() {
     const r = this.room; const motion = Motion.enabled && Motion.receiving;
@@ -805,7 +842,7 @@ const Game = {
     }
   },
   startFever() {
-    this.fever = true;
+    this.fever = true; this.feverN++;
     const g = $('#game'); g.classList.add('fever'); $('#gCount').classList.add('fever');
     const b = el('div', 'fever-banner', 'FEVER!!<br><small>참지 마! 계속 가!</small>'); g.appendChild(b);
     Sound.fever(); haptic(90);
@@ -838,6 +875,7 @@ const Game = {
       if (this.running) this.finish();
       return;
     }
+    Track.ev('game_quit', this.room.id, null, { running: this.running });
     this.cleanup(); this.room = null; show('lobby'); renderLobby();
   },
   makeResult() {
@@ -845,6 +883,7 @@ const Game = {
     const stress = this.count ? clamp(Math.round(100 * (1 - Math.exp(-this.energy / room.K))), 3, 99) : 0;
     const res = { ts: Date.now(), day: dayKey(), room: room.id, stress, count: this.count, best: Math.round(this.best * 100) };
     if (this.count) { Store.data.sessions.push(res); Store.save(); }
+    if (this.count) Track.ev('game_end', room.id, stress, { count: this.count, best: res.best, motion: Motion.receiving, fever: this.feverN > 0, mine: this.mine.size, early: this.timeLeft > 0.5 });
     return { ...res, mine: [...this.mine] };
   },
 };
@@ -1275,6 +1314,7 @@ function bindLogo() {
     if (angerN >= 10) {
       angerN = 0; anger.style.setProperty('--ang', '1');
       keys.forEach((k, i) => setTimeout(() => { press(k); Sound.key(); }, 120 + i * 110));
+      Track.ev('logo_burst');
       Sound.boing(); toast(pick(['…그래도 참았다.', '후우… 오늘도 참았다.', '참을 인(忍) 세 번 완료', '부글부글… 아니야 괜찮아']));
     }
   });
@@ -1315,7 +1355,7 @@ function openIntro(roomId) {
   const add = () => {
     const inp = $('#customInput'); const v = inp.value.trim(); if (!v) return;
     if (!C[roomId].includes(v)) { C[roomId].push(v); if (C[roomId].length > 30) C[roomId].shift(); }
-    Store.save(); inp.value = ''; renderChips();
+    Store.save(); inp.value = ''; renderChips(); Track.ev('custom_add', roomId);
   };
   renderChips();
   $('#customAdd').onclick = add;
@@ -1323,23 +1363,26 @@ function openIntro(roomId) {
   if (room.usesBoss) {
     $('#resetBtn').onclick = () => {
       if (!confirm(`상사 이름과 '${room.title}'에 직접 쓴 내용을 모두 지울까요?`)) return;
+      Track.ev('reset_click', roomId);
       Store.data.settings.boss = ''; C[roomId] = []; Store.save();
       $('#bossInput').value = ''; renderChips(); renderLobby();
       $('#resetBtn').textContent = '✓ 지웠어요';
     };
   }
-  $('#introCancel').onclick = closeModal;
+  $('#introCancel').onclick = () => { Track.ev('intro_cancel', roomId); closeModal(); };
   $('#introGo').onclick = async () => {
     add();
     if (room.usesBoss) { Store.data.settings.boss = $('#bossInput').value.trim(); Store.save(); }
     Sound.unlock();
-    await Motion.request(); // iOS: 반드시 탭 직후에 권한 요청
+    const motionOk = await Motion.request(); // iOS: 반드시 탭 직후에 권한 요청
+    Track.ev('motion_perm', roomId, null, { ok: !!motionOk });
     closeModal();
     Game.start(roomId);
   };
 }
 
 function openSettings() {
+  Track.ev('settings_open');
   const s = Store.data.settings;
   openModal(`<h3>설정</h3>
     <label class="field"><span>상사 이름</span><input id="setBoss" maxlength="12" placeholder="예: 김부장" value="${esc(s.boss)}"></label>
@@ -1352,9 +1395,9 @@ function openSettings() {
   $$('#setSens button').forEach((b) => (b.onclick = () => { sens = +b.dataset.v; $$('#setSens button').forEach((x) => x.classList.toggle('on', x === b)); }));
   $$('#setSound button').forEach((b) => (b.onclick = () => { sound = b.dataset.v === '1'; $$('#setSound button').forEach((x) => x.classList.toggle('on', x === b)); }));
   $('#setClear').onclick = () => {
-    if (confirm('스트레스 기록을 모두 지울까요? 되돌릴 수 없어요.')) { Store.data.sessions = []; Store.save(); renderLobby(); $('#setClear').textContent = '지웠어요'; }
+    if (confirm('스트레스 기록을 모두 지울까요? 되돌릴 수 없어요.')) { Store.data.sessions = []; Store.save(); renderLobby(); Track.ev('records_clear'); $('#setClear').textContent = '지웠어요'; }
   };
-  $('#setDone').onclick = () => { s.boss = $('#setBoss').value.trim(); s.sens = sens; s.sound = sound; Store.save(); closeModal(); renderLobby(); };
+  $('#setDone').onclick = () => { s.boss = $('#setBoss').value.trim(); s.sens = sens; s.sound = sound; Store.save(); closeModal(); renderLobby(); Track.ev('settings_save', null, null, { sens, sound }); };
 }
 
 /* ----- 결과 ----- */
@@ -1410,6 +1453,7 @@ $('#shareBtn').onclick = async () => {
   const room = ROOMS[lastRes.room];
   const text = `오늘의 스트레스 ${lastRes.stress}% (${rankOf(lastRes.stress).t})\n${room.title}에서 ${room.unit} ${lastRes.count}번으로 풀었어요 💢\n#오늘도참았다`;
   const url = location.href.split(/[?#]/)[0];
+  Track.ev('share_click', lastRes.room, lastRes.stress, { method: navigator.share ? 'native' : 'clipboard' });
   try { if (navigator.share) { await navigator.share({ title: '오늘도 참았다', text, url }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
   try { await navigator.clipboard.writeText(`${text}\n${url}`); toast('복사했어요! 붙여넣어 자랑하세요'); } catch (e) { toast('이 브라우저에선 공유가 안 돼요'); }
 };
@@ -1452,16 +1496,16 @@ function renderCalendar() {
 }
 
 /* ================= 이벤트 연결 ================= */
-$$('.room-card').forEach((b) => (b.onclick = () => { Sound.unlock(); Sound.key(); openIntro(b.dataset.room); }));
+$$('.room-card').forEach((b) => (b.onclick = () => { Sound.unlock(); Sound.key(); Track.ev('click_room', b.dataset.room); openIntro(b.dataset.room); }));
 $('#settingsBtn').onclick = openSettings;
-$('#calBtn').onclick = openCalendar;
+$('#calBtn').onclick = () => { Track.ev('calendar_open', null, null, { from: 'lobby' }); openCalendar(); };
 $('#exitBtn').onclick = () => Game.quit();
-$('#againBtn').onclick = () => openIntro(lastRoom);
-$('#homeBtn').onclick = () => { renderLobby(); show('lobby'); };
-$('#resCalBtn').onclick = openCalendar;
+$('#againBtn').onclick = () => { Track.ev('again_click', lastRoom); openIntro(lastRoom); };
+$('#homeBtn').onclick = () => { Track.ev('home_click', lastRoom); renderLobby(); show('lobby'); };
+$('#resCalBtn').onclick = () => { Track.ev('calendar_open', lastRoom, null, { from: 'result' }); openCalendar(); };
 $('#calBack').onclick = () => { renderLobby(); show('lobby'); };
-$('#calPrev').onclick = () => { cal.m--; if (cal.m < 0) { cal.m = 11; cal.y--; } renderCalendar(); };
-$('#calNext').onclick = () => { cal.m++; if (cal.m > 11) { cal.m = 0; cal.y++; } renderCalendar(); };
+$('#calPrev').onclick = () => { Track.ev('calendar_nav'); cal.m--; if (cal.m < 0) { cal.m = 11; cal.y--; } renderCalendar(); };
+$('#calNext').onclick = () => { Track.ev('calendar_nav'); cal.m++; if (cal.m > 11) { cal.m = 0; cal.y++; } renderCalendar(); };
 // 모션 이벤트가 늦게 들어오기 시작하면 안내 갱신
 let hintShown = false;
 Motion.on(() => { if (!hintShown && Game.room && Motion.receiving) { hintShown = true; Game.setHint(); } });
@@ -1469,6 +1513,7 @@ document.addEventListener('visibilitychange', () => { if (document.hidden) Sound
 
 bindLogo();
 renderLobby();
+Track.pageView();
 // 테스트용 훅
 window.__office = { Game, Motion, Store, ROOMS };
 })();

@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>오늘도 참았다 · 운영 대시보드</title>
+<link rel="icon" type="image/png" href="../icons/favicon-64.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<style>
+.viz-root{color-scheme:light;
+  --page:#f4f2ee;--surface-1:#fcfcfb;--surface-2:#f0efec;--line:#e2e0da;--grid:#ebe9e4;
+  --text-primary:#0b0b0b;--text-secondary:#52514e;--text-muted:#7a786f;
+  --series-1:#2a78d6;--series-2:#eb6834;--accent:#e3412f;--focus:#2a78d6;
+  --good:#0ca30c;--critical:#d03b3b}
+@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])) .viz-root{color-scheme:dark;
+  --page:#121211;--surface-1:#1a1a19;--surface-2:#262624;--line:#33332f;--grid:#2a2a27;
+  --text-primary:#f0efec;--text-secondary:#c3c2b7;--text-muted:#94938a;
+  --series-1:#3987e5;--series-2:#d95926;--accent:#e66767;--focus:#3987e5}}
+:root[data-theme="dark"] .viz-root{color-scheme:dark;
+  --page:#121211;--surface-1:#1a1a19;--surface-2:#262624;--line:#33332f;--grid:#2a2a27;
+  --text-primary:#f0efec;--text-secondary:#c3c2b7;--text-muted:#94938a;
+  --series-1:#3987e5;--series-2:#d95926;--accent:#e66767;--focus:#3987e5}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--text-primary);font-family:system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-size:14px;line-height:1.45}
+.viz-root{min-height:100vh;background:var(--page);color:var(--text-primary);padding:16px 16px 48px}
+.sub{color:var(--text-secondary);font-size:13px}
+.gate a{color:var(--series-1)}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1,h2,h3{font-family:'Jua',sans-serif;font-weight:400;margin:0}
+h1{font-size:24px}
+h2{font-size:17px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.top .sub{color:var(--text-secondary);font-size:13px}
+.spacer{flex:1}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{border:1px solid var(--line);background:var(--surface-1);border-radius:8px;padding:7px 12px}
+.btn:hover{background:var(--surface-2)}
+.btn:focus-visible,.seg button:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;background:var(--surface-1);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:none;border-radius:7px;padding:6px 12px;color:var(--text-secondary)}
+.seg button[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);font-weight:600}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary);background:var(--surface-1);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+.badge .dot{width:8px;height:8px;border-radius:50%;background:var(--good)}
+.demo{background:#fff4d6;color:#5c4300;border:1px solid #f0d38a;border-radius:10px;padding:10px 14px}
+:root[data-theme="dark"] .demo{background:#3a2f12;color:#f3dfa6;border-color:#5c4a1a}
+@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])) .demo{background:#3a2f12;color:#f3dfa6;border-color:#5c4a1a}}
+.grid{display:grid;gap:16px}
+.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:900px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:1fr}}
+.card{background:var(--surface-1);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}
+.card h2{margin-bottom:2px}
+.card .desc{color:var(--text-muted);font-size:12px;margin:0 0 12px}
+.kpi .label{color:var(--text-secondary);font-size:13px}
+.kpi .val{font-size:30px;font-weight:700;letter-spacing:-.5px;margin-top:2px;font-variant-numeric:tabular-nums}
+.kpi .val small{font-size:15px;font-weight:600;color:var(--text-secondary);margin-left:2px}
+.kpi .foot{color:var(--text-muted);font-size:12px;margin-top:2px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--text-secondary);margin-bottom:6px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i.ln{width:14px;height:2px;border-radius:1px;display:inline-block}
+.legend i.bx{width:10px;height:10px;border-radius:2px;display:inline-block}
+.chart{position:relative;width:100%}
+.chart svg{display:block;width:100%;overflow:visible}
+.axis text{fill:var(--text-muted);font-size:11px}
+.lbl{fill:var(--text-secondary);font-size:12px}
+.val-lbl{fill:var(--text-primary);font-size:12px;font-weight:600}
+.gridline{stroke:var(--grid);stroke-width:1}
+.baseline{stroke:var(--line);stroke-width:1}
+.bar{transition:opacity .12s}
+.hit{fill:transparent;cursor:default}
+.hit:hover + .bar,.bar.hover{opacity:.78}
+.tip{position:fixed;pointer-events:none;z-index:20;background:var(--surface-1);color:var(--text-primary);border:1px solid var(--line);border-radius:10px;
+  box-shadow:0 6px 20px rgba(0,0,0,.14);padding:8px 10px;font-size:12px;min-width:120px;display:none}
+.tip .t{color:var(--text-secondary);margin-bottom:4px}
+.tip .row{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.tip .row b{font-size:14px}
+.tip .row span{display:inline-flex;align-items:center;gap:6px;color:var(--text-secondary)}
+.tip i{width:12px;height:2px;display:inline-block;border-radius:1px}
+table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:8px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--text-secondary);font-weight:600;font-size:12px}
+.scroll{overflow-x:auto}
+details summary{cursor:pointer;color:var(--text-secondary);font-size:13px;margin-top:8px}
+.gate{max-width:380px;margin:12vh auto 0;background:var(--surface-1);border:1px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:12px}
+.gate input{font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);color:var(--text-primary)}
+.gate .err{color:var(--critical);font-size:13px;min-height:18px}
+.gate .primary{background:var(--text-primary);color:var(--surface-1);border:0;border-radius:10px;padding:11px;font-weight:600}
+.loading .grid{opacity:.5;transition:opacity .2s}
+.empty{color:var(--text-muted);font-size:13px;padding:24px 0;text-align:center}
+.split{display:flex;height:28px;border-radius:6px;overflow:hidden;gap:2px;background:var(--surface-1)}
+.split div{height:100%}
+.split-lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);margin-top:6px}
+.split-lbl b{color:var(--text-primary)}
+</style>
+</head>
+<body>
+<div class="viz-root" id="root">
+  <div class="wrap" id="app"></div>
+</div>
+<div class="tip" id="tip" role="tooltip"></div>
+<script src="../analytics-config.js"></script>
+<script>
+(() => {
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const cfg = window.OC_ANALYTICS || {};
+const params = new URLSearchParams(location.search);
+const DEMO = params.has('demo');
+const app = $('#app'), tip = $('#tip');
+const ROOM = { reject: '결재 반려하기', shred: '업무 파쇄기', resign: '사직서 던지기' };
+const EVENT = { click_room: '게임 카드 클릭', motion_perm: '시작하기 (모션 권한 요청)', intro_cancel: '시작 화면에서 취소', custom_add: '직접 쓰기 추가', reset_click: '초기화 버튼',
+  game_start: '게임 시작', game_end: '게임 끝까지 완료', game_quit: '중간에 나가기', again_click: '결과: 한 번 더', home_click: '결과: 다른 게임 하기',
+  share_click: '결과: 자랑하기(공유)', calendar_open: '캘린더 열기', calendar_nav: '캘린더 달 이동', settings_open: '설정 열기', settings_save: '설정 저장',
+  records_clear: '기록 전부 지우기', logo_burst: '로고 10연타 이스터에그' };
+const STRESS_LBL = { l1: '0–29% 괜찮음', l2: '30–59% 지침', l3: '60–84% 많이 참음', l4: '85%+ 한계' };
+const WD = ['일', '월', '화', '수', '목', '금', '토'];
+const fmtN = (n) => (n == null ? '–' : Number(n).toLocaleString('ko-KR'));
+const pct = (a, b) => (b ? Math.round((a / b) * 100) : 0);
+const fmtDur = (sec) => { sec = Math.round(sec || 0); if (sec < 60) return `${sec}초`; const m = Math.floor(sec / 60), s = sec % 60; return m < 60 ? `${m}분 ${s}초` : `${Math.floor(m / 60)}시간 ${m % 60}분`; };
+const css = (v) => getComputedStyle($('#root')).getPropertyValue(v).trim();
+const NS = 'http://www.w3.org/2000/svg';
+const svgEl = (tag, attrs = {}, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+
+/* ---------- 툴팁 ---------- */
+function showTip(ev, title, rows) {
+  tip.innerHTML = '';
+  tip.appendChild(el('div', 't', title));
+  rows.forEach(([label, value, color]) => {
+    const r = el('div', 'row'); const sp = el('span');
+    if (color) { const i = el('i'); i.style.background = color; sp.appendChild(i); }
+    sp.appendChild(document.createTextNode(label)); r.appendChild(sp); r.appendChild(el('b', null, value)); tip.appendChild(r);
+  });
+  tip.style.display = 'block';
+  const r = tip.getBoundingClientRect(); let x = ev.clientX + 14, y = ev.clientY + 14;
+  if (x + r.width > innerWidth - 8) x = ev.clientX - r.width - 14;
+  if (y + r.height > innerHeight - 8) y = ev.clientY - r.height - 14;
+  tip.style.left = `${x}px`; tip.style.top = `${y}px`;
+}
+const hideTip = () => { tip.style.display = 'none'; };
+
+/* ---------- 차트: 꺾은선 (같은 단위 여러 시리즈, 축 하나) ---------- */
+function lineChart(box, rows, series, xLabel) {
+  box.innerHTML = ''; if (!rows.length) { box.appendChild(el('div', 'empty', '아직 데이터가 없어요')); return; }
+  const W = box.clientWidth, H = 240, m = { l: 36, r: 64, t: 12, b: 26 };
+  const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, height: H, role: 'img', 'aria-label': series.map((s) => s.name).join(', ') + ' 일별 추이' }, box);
+  const max = Math.max(1, ...rows.flatMap((r) => series.map((s) => r[s.key] || 0)));
+  const nice = niceMax(max), iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const x = (i) => m.l + (rows.length === 1 ? iw / 2 : (i / (rows.length - 1)) * iw), y = (v) => m.t + ih - (v / nice) * ih;
+  const g = svgEl('g', { class: 'axis' }, svg);
+  for (let k = 0; k <= 4; k++) { const v = (nice / 4) * k; svgEl('line', { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), class: k ? 'gridline' : 'baseline' }, g); const t = svgEl('text', { x: m.l - 6, y: y(v) + 4, 'text-anchor': 'end' }, g); t.textContent = fmtN(Math.round(v)); }
+  const step = Math.max(1, Math.ceil(rows.length / Math.max(2, Math.floor(iw / 70))));
+  rows.forEach((r, i) => { if (i % step === 0 || i === rows.length - 1) { const t = svgEl('text', { x: x(i), y: H - 6, 'text-anchor': 'middle' }, g); t.textContent = xLabel(r); } });
+  series.forEach((s) => {
+    const d = rows.map((r, i) => `${i ? 'L' : 'M'}${x(i)},${y(r[s.key] || 0)}`).join('');
+    svgEl('path', { d, fill: 'none', stroke: s.color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+    const li = rows.length - 1, lv = rows[li][s.key] || 0;
+    svgEl('circle', { cx: x(li), cy: y(lv), r: 4, fill: s.color, stroke: css('--surface-1'), 'stroke-width': 2 }, svg);
+    const t = svgEl('text', { x: x(li) + 8, y: y(lv) + 4, class: 'lbl' }, svg); t.textContent = `${s.name} ${fmtN(lv)}`;
+  });
+  // 크로스헤어
+  const hair = svgEl('line', { y1: m.t, y2: m.t + ih, stroke: css('--text-muted'), 'stroke-width': 1, 'stroke-dasharray': '3 3', opacity: 0 }, svg);
+  const dots = series.map((s) => svgEl('circle', { r: 4, fill: s.color, stroke: css('--surface-1'), 'stroke-width': 2, opacity: 0 }, svg));
+  const hit = svgEl('rect', { x: m.l - 10, y: m.t, width: iw + 20, height: ih, class: 'hit', tabindex: 0 }, svg);
+  const at = (i, ev) => {
+    const r = rows[i]; hair.setAttribute('x1', x(i)); hair.setAttribute('x2', x(i)); hair.setAttribute('opacity', 1);
+    series.forEach((s, k) => { dots[k].setAttribute('cx', x(i)); dots[k].setAttribute('cy', y(r[s.key] || 0)); dots[k].setAttribute('opacity', 1); });
+    showTip(ev, xLabel(r, true), series.map((s) => [s.name, fmtN(r[s.key] || 0), s.color]));
+  };
+  hit.addEventListener('pointermove', (ev) => { const b = svg.getBoundingClientRect(); const px = ((ev.clientX - b.left) / b.width) * W; const i = Math.max(0, Math.min(rows.length - 1, Math.round(((px - m.l) / iw) * (rows.length - 1)))); at(i, ev); });
+  hit.addEventListener('pointerleave', () => { hideTip(); hair.setAttribute('opacity', 0); dots.forEach((d) => d.setAttribute('opacity', 0)); });
+}
+function niceMax(v) { const p = Math.pow(10, Math.floor(Math.log10(v))); const n = v / p; return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p; }
+
+/* ---------- 차트: 가로 막대 (한 시리즈) ---------- */
+function hBars(box, items, { color, unit = '', fmt = fmtN, tipRows } = {}) {
+  box.innerHTML = ''; if (!items.length || items.every((d) => !d.value)) { box.appendChild(el('div', 'empty', '아직 데이터가 없어요')); return; }
+  const W = box.clientWidth, rowH = 30, labW = Math.min(170, W * 0.38), H = items.length * rowH + 4, valW = 70;
+  const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, height: H, role: 'img' }, box);
+  const max = Math.max(...items.map((d) => d.value)), iw = W - labW - valW;
+  items.forEach((d, i) => {
+    const yy = i * rowH, bw = Math.max(d.value ? 3 : 0, (d.value / max) * iw);
+    const lt = svgEl('text', { x: labW - 8, y: yy + rowH / 2 + 4, 'text-anchor': 'end', class: 'lbl' }, svg); lt.textContent = d.label;
+    const hit = svgEl('rect', { x: 0, y: yy, width: W, height: rowH, class: 'hit', tabindex: 0 }, svg);
+    const bar = svgEl('path', { d: roundRight(labW, yy + 6, bw, rowH - 12, 4), fill: color || css('--series-1'), class: 'bar' }, svg);
+    const vt = svgEl('text', { x: labW + bw + 6, y: yy + rowH / 2 + 4, class: 'val-lbl' }, svg); vt.textContent = fmt(d.value) + unit;
+    const on = (ev) => { bar.classList.add('hover'); showTip(ev, d.label, tipRows ? tipRows(d) : [['값', fmt(d.value) + unit, color || css('--series-1')]]); };
+    hit.addEventListener('pointermove', on); hit.addEventListener('focus', (ev) => on({ clientX: hit.getBoundingClientRect().right - 40, clientY: hit.getBoundingClientRect().top }));
+    hit.addEventListener('pointerleave', () => { bar.classList.remove('hover'); hideTip(); }); hit.addEventListener('blur', () => { bar.classList.remove('hover'); hideTip(); });
+  });
+}
+const roundRight = (x, y, w, h, r) => { r = Math.min(r, w, h / 2); return `M${x},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h - r}Q${x + w},${y + h} ${x + w - r},${y + h}H${x}Z`; };
+const roundTop = (x, y, w, h, r) => { r = Math.min(r, h, w / 2); return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`; };
+
+/* ---------- 차트: 세로 막대 (한 시리즈) ---------- */
+function vBars(box, items, { color, label, tipTitle, labelEvery = 1 } = {}) {
+  box.innerHTML = ''; if (!items.some((d) => d.value)) { box.appendChild(el('div', 'empty', '아직 데이터가 없어요')); return; }
+  const W = box.clientWidth, H = 200, m = { l: 30, r: 8, t: 16, b: 24 };
+  const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, height: H, role: 'img' }, box);
+  const max = niceMax(Math.max(1, ...items.map((d) => d.value))), iw = W - m.l - m.r, ih = H - m.t - m.b, slot = iw / items.length, bw = Math.max(4, slot - 4);
+  const g = svgEl('g', { class: 'axis' }, svg);
+  for (let k = 0; k <= 2; k++) { const v = (max / 2) * k, yy = m.t + ih - (v / max) * ih; svgEl('line', { x1: m.l, x2: W - m.r, y1: yy, y2: yy, class: k ? 'gridline' : 'baseline' }, g); const t = svgEl('text', { x: m.l - 6, y: yy + 4, 'text-anchor': 'end' }, g); t.textContent = fmtN(v); }
+  const top = items.reduce((a, b) => (b.value > a.value ? b : a));
+  items.forEach((d, i) => {
+    const bh = (d.value / max) * ih, xx = m.l + i * slot + (slot - bw) / 2, yy = m.t + ih - bh;
+    const hit = svgEl('rect', { x: m.l + i * slot, y: m.t, width: slot, height: ih, class: 'hit', tabindex: 0 }, svg);
+    const bar = svgEl('path', { d: roundTop(xx, yy, bw, Math.max(d.value ? 2 : 0, bh), 4), fill: color || css('--series-1'), class: 'bar' }, svg);
+    if (i % labelEvery === 0) { const t = svgEl('text', { x: xx + bw / 2, y: H - 6, 'text-anchor': 'middle' }, g); t.textContent = label(d); }
+    if (d === top && d.value) { const t = svgEl('text', { x: xx + bw / 2, y: yy - 5, 'text-anchor': 'middle', class: 'val-lbl' }, svg); t.textContent = fmtN(d.value); }
+    hit.addEventListener('pointermove', (ev) => { bar.classList.add('hover'); showTip(ev, tipTitle(d), [['플레이', fmtN(d.value), color || css('--series-1')]]); });
+    hit.addEventListener('pointerleave', () => { bar.classList.remove('hover'); hideTip(); });
+  });
+}
+
+/* ---------- 데이터 ---------- */
+async function fetchStats(pass, days) {
+  if (DEMO) return demoData(days);
+  const headers = { apikey: cfg.key, 'Content-Type': 'application/json' };
+  if (!String(cfg.key).startsWith('sb_')) headers.Authorization = `Bearer ${cfg.key}`;
+  const res = await fetch(`${String(cfg.url).replace(/\/$/, '')}/rest/v1/rpc/dashboard_stats`, { method: 'POST', headers, body: JSON.stringify({ p_pass: pass, p_days: days }) });
+  if (!res.ok) { const t = await res.text(); throw new Error(/invalid password|28P01/.test(t) ? 'PASS' : `서버 응답 오류 (${res.status})`); }
+  return res.json();
+}
+function demoData(days) {
+  let s = 11; const r = () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
+  const daily = []; const today = new Date();
+  for (let i = days - 1; i >= 0; i--) { const d = new Date(today); d.setDate(d.getDate() - i); const base = 40 + (days - i) * 3 + r() * 30 + (d.getDay() === 1 ? 25 : 0);
+    daily.push({ day: d.toISOString().slice(0, 10), visitors: Math.round(base), sessions: Math.round(base * 1.3), plays: Math.round(base * 2.1), avg_stress: Math.round(48 + r() * 30) }); }
+  const sum = (k) => daily.reduce((a, b) => a + b[k], 0);
+  const plays = sum('plays');
+  return { demo: true, days, generated_at: new Date().toISOString(), online_now: 7, visitors: Math.round(sum('visitors') * 0.8), new_visitors: Math.round(sum('visitors') * 0.55), returning_visitors: Math.round(sum('visitors') * 0.25),
+    sessions: sum('sessions'), pageviews: Math.round(sum('sessions') * 1.1), avg_session_sec: 214, median_session_sec: 158, total_active_sec: sum('sessions') * 214,
+    plays, finishes: Math.round(plays * 0.86), quits: Math.round(plays * 0.09), avg_stress: 63, avg_plays_per_visitor: 2.6, shares: Math.round(plays * 0.07),
+    motion: { motion: Math.round(plays * 0.62), touch: Math.round(plays * 0.24) }, stress_buckets: { l1: 120, l2: 310, l3: 420, l4: 260 },
+    daily, rooms: [{ room: 'reject', plays: Math.round(plays * 0.42), finishes: Math.round(plays * 0.37), avg_stress: 66, avg_count: 31.4, motion_plays: Math.round(plays * 0.24), fever_plays: Math.round(plays * 0.2), custom_plays: Math.round(plays * 0.11) },
+      { room: 'shred', plays: Math.round(plays * 0.33), finishes: Math.round(plays * 0.29), avg_stress: 58, avg_count: 27.9, motion_plays: Math.round(plays * 0.2), fever_plays: Math.round(plays * 0.16), custom_plays: Math.round(plays * 0.05) },
+      { room: 'resign', plays: Math.round(plays * 0.25), finishes: Math.round(plays * 0.2), avg_stress: 71, avg_count: 18.2, motion_plays: Math.round(plays * 0.15), fever_plays: Math.round(plays * 0.06), custom_plays: Math.round(plays * 0.07) }],
+    clicks: Object.keys(EVENT).map((k, i) => ({ name: k, n: Math.round(plays * [1.15, 1.05, 0.12, 0.2, 0.02, 1, 0.86, 0.09, 0.41, 0.3, 0.07, 0.22, 0.15, 0.08, 0.05, 0.01, 0.04][i]) })),
+    hours: Array.from({ length: 24 }, (_, h) => ({ hour: h, plays: Math.round((h >= 18 && h <= 23 ? 90 : h >= 12 && h <= 13 ? 60 : h >= 9 && h < 18 ? 30 : h < 2 ? 40 : 6) * (0.7 + r() * 0.6)) })),
+    weekdays: WD.map((_, i) => ({ dow: i, plays: Math.round((i === 1 ? 260 : i === 5 ? 120 : i === 0 || i === 6 ? 90 : 190) * (0.8 + r() * 0.4)), avg_stress: [48, 74, 66, 63, 61, 52, 45][i] })),
+    devices: [{ device: 'iOS', n: 610 }, { device: 'Android', n: 420 }, { device: 'PC', n: 95 }], sources: [{ src: '인스타그램', n: 540 }, { src: '직접 방문', n: 310 }, { src: '카카오톡', n: 180 }, { src: 'threads.net', n: 42 }, { src: 'google.com', n: 18 }] };
+}
+
+/* ---------- 화면 ---------- */
+let state = { pass: '', days: 7, data: null };
+function gate(msg = '') {
+  if (!DEMO && !(cfg.url && cfg.key)) {
+    app.innerHTML = '';
+    const g = el('div', 'gate'); g.appendChild(el('h1', null, '대시보드 준비 중'));
+    g.appendChild(el('p', null, '아직 통계 저장소(Supabase)가 연결되지 않았어요. analytics-config.js 에 주소와 키를 넣으면 이 화면에서 비밀번호로 열 수 있어요.'));
+    const a = el('a', null, '예시 데이터로 미리 보기 →'); a.href = '?demo'; g.appendChild(a); app.appendChild(g); return;
+  }
+  app.innerHTML = '';
+  const g = el('form', 'gate'); g.appendChild(el('h1', null, '오늘도 참았다 · 운영 대시보드'));
+  g.appendChild(el('div', 'sub', '대시보드 비밀번호를 입력하세요'));
+  const inp = el('input'); inp.type = 'password'; inp.autocomplete = 'current-password'; inp.placeholder = '비밀번호'; g.appendChild(inp);
+  const err = el('div', 'err', msg); g.appendChild(err);
+  const b = el('button', 'primary', '열기'); b.type = 'submit'; g.appendChild(b);
+  g.addEventListener('submit', async (e) => { e.preventDefault(); b.disabled = true; err.textContent = '';
+    try { state.pass = inp.value; state.data = await fetchStats(state.pass, state.days); try { sessionStorage.setItem('oc_dash', state.pass); } catch (x) {} render(); }
+    catch (x) { err.textContent = x.message === 'PASS' ? '비밀번호가 맞지 않아요' : x.message; b.disabled = false; } });
+  app.appendChild(g); inp.focus();
+}
+async function reload() {
+  $('#root').classList.add('loading');
+  try { state.data = await fetchStats(state.pass, state.days); render(); }
+  catch (x) { if (x.message === 'PASS') { gate('비밀번호가 바뀌었어요. 다시 입력해 주세요'); } else alert(x.message); }
+  $('#root').classList.remove('loading');
+}
+function card(parent, title, desc) { const c = el('section', 'card'); c.appendChild(el('h2', null, title)); if (desc) c.appendChild(el('p', 'desc', desc)); parent.appendChild(c); return c; }
+function kpi(parent, label, val, unit, foot) {
+  const c = el('div', 'card kpi'); c.appendChild(el('div', 'label', label));
+  const v = el('div', 'val', val); if (unit) v.appendChild(el('small', null, unit)); c.appendChild(v);
+  if (foot) c.appendChild(el('div', 'foot', foot)); parent.appendChild(c);
+}
+function render() {
+  const d = state.data; app.innerHTML = '';
+  const c1 = css('--series-1'), c2 = css('--series-2');
+  // 머리
+  const top = el('div', 'top'); top.appendChild(el('h1', null, '오늘도 참았다 · 운영 대시보드'));
+  const live = el('span', 'badge'); live.appendChild(el('i', 'dot')); live.appendChild(document.createTextNode(`지금 접속 중 ${fmtN(d.online_now)}명`)); top.appendChild(live);
+  top.appendChild(el('div', 'spacer'));
+  const upd = el('span', 'sub', `업데이트 ${new Date(d.generated_at).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}`); top.appendChild(upd);
+  const rb = el('button', 'btn', '새로고침'); rb.onclick = reload; top.appendChild(rb);
+  app.appendChild(top);
+  if (d.demo) app.appendChild(el('div', 'demo', '⚠️ 예시 데이터예요. 실제 방문 기록이 아니라 화면 구성을 보여주기 위한 가짜 숫자입니다.'));
+  // 기간 필터 (한 줄, 맨 위)
+  const f = el('div', 'filters'); const seg = el('div', 'seg'); seg.setAttribute('role', 'group'); seg.setAttribute('aria-label', '기간');
+  [[1, '오늘'], [7, '최근 7일'], [30, '최근 30일'], [90, '최근 90일']].forEach(([n, l]) => { const b = el('button', null, l); b.setAttribute('aria-pressed', String(state.days === n)); b.onclick = () => { state.days = n; reload(); }; seg.appendChild(b); });
+  f.appendChild(seg); f.appendChild(el('span', 'sub', '한국 시간 기준 · 모든 숫자는 익명 집계')); app.appendChild(f);
+  // KPI
+  const k = el('div', 'grid kpis');
+  kpi(k, '방문자 수', fmtN(d.visitors), '명', `신규 ${fmtN(d.new_visitors)} · 재방문 ${fmtN(d.returning_visitors)}`);
+  kpi(k, '방문(세션) 수', fmtN(d.sessions), '회', `페이지뷰 ${fmtN(d.pageviews)}`);
+  kpi(k, '평균 이용 시간', fmtDur(d.avg_session_sec), '', `중간값 ${fmtDur(d.median_session_sec)} · 총 ${fmtDur(d.total_active_sec)}`);
+  kpi(k, '게임 플레이', fmtN(d.plays), '판', `1인당 ${d.avg_plays_per_visitor ?? 0}판 · 완주율 ${pct(d.finishes, d.plays)}%`);
+  kpi(k, '평균 스트레스', d.avg_stress == null ? '–' : d.avg_stress, '%', '게임을 끝까지 한 판 기준');
+  kpi(k, '자랑하기(공유)', fmtN(d.shares), '회', `완주 대비 ${pct(d.shares, d.finishes)}%`);
+  kpi(k, '모션으로 플레이', `${pct(d.motion?.motion, (d.motion?.motion || 0) + (d.motion?.touch || 0))}`, '%', `모션 ${fmtN(d.motion?.motion)} · 터치 ${fmtN(d.motion?.touch)}`);
+  kpi(k, '중간에 나가기', fmtN(d.quits), '회', `시작 대비 ${pct(d.quits, d.plays)}%`);
+  app.appendChild(k);
+  // 일별 추이
+  const daily = (d.daily || []).map((r) => ({ ...r }));
+  const cTrend = card(app, '일별 방문자와 게임 플레이', '같은 단위(명·판)라 한 축에 함께 표시했어요. 그래프 위를 움직이면 날짜별 숫자가 보여요.');
+  const lg = el('div', 'legend'); [['방문자', c1], ['게임 플레이', c2]].forEach(([n, c]) => { const s = el('span'); const i = el('i', 'ln'); i.style.background = c; s.appendChild(i); s.appendChild(document.createTextNode(n)); lg.appendChild(s); }); cTrend.appendChild(lg);
+  const trendBox = el('div', 'chart'); cTrend.appendChild(trendBox);
+  const det = el('details'); det.appendChild(el('summary', null, '표로 보기')); const sc = el('div', 'scroll'); const tb = el('table');
+  tb.innerHTML = '<thead><tr><th>날짜</th><th>방문자</th><th>방문(세션)</th><th>게임 플레이</th><th>평균 스트레스</th></tr></thead>';
+  const tbody = el('tbody'); daily.slice().reverse().forEach((r) => { const tr = el('tr'); [r.day, fmtN(r.visitors), fmtN(r.sessions), fmtN(r.plays), r.avg_stress == null ? '–' : `${r.avg_stress}%`].forEach((v) => tr.appendChild(el('td', null, v))); tbody.appendChild(tr); });
+  tb.appendChild(tbody); sc.appendChild(tb); det.appendChild(sc); cTrend.appendChild(det);
+  // 게임별
+  const two1 = el('div', 'grid two'); app.appendChild(two1);
+  const cRoom = card(two1, '게임별 플레이 수', '어떤 게임이 가장 인기 있는지');
+  const roomBox = el('div', 'chart'); cRoom.appendChild(roomBox);
+  const rooms = ['reject', 'shred', 'resign'].map((id) => (d.rooms || []).find((r) => r.room === id) || { room: id, plays: 0, finishes: 0 });
+  const cStress = card(two1, '게임별 평균 스트레스', '게임을 끝까지 한 판의 평균 (%)');
+  const stressBox = el('div', 'chart'); cStress.appendChild(stressBox);
+  const cRoomT = card(app, '게임별 상세', '완주율 = 끝까지 한 판 ÷ 시작한 판 · 직접 쓰기 = 직접 쓴 내용이 있는 상태로 시작한 판');
+  const sc2 = el('div', 'scroll'); const t2 = el('table');
+  t2.innerHTML = '<thead><tr><th>게임</th><th>시작</th><th>완주</th><th>완주율</th><th>평균 스트레스</th><th>평균 횟수</th><th>모션 비율</th><th>FEVER 달성</th><th>직접 쓰기 사용</th></tr></thead>';
+  const tb2 = el('tbody'); rooms.forEach((r) => { const tr = el('tr'); [ROOM[r.room], fmtN(r.plays), fmtN(r.finishes), `${pct(r.finishes, r.plays)}%`, r.avg_stress == null ? '–' : `${r.avg_stress}%`, r.avg_count == null ? '–' : `${r.avg_count}회`, `${pct(r.motion_plays, r.finishes)}%`, `${pct(r.fever_plays, r.finishes)}%`, `${pct(r.custom_plays, r.plays)}%`].forEach((v) => tr.appendChild(el('td', null, v))); tb2.appendChild(tr); });
+  t2.appendChild(tb2); sc2.appendChild(t2); cRoomT.appendChild(sc2);
+  // 시간대·요일
+  const two2 = el('div', 'grid two'); app.appendChild(two2);
+  const cHour = card(two2, '시간대별 게임 시작', '언제 가장 스트레스를 푸는지 (한국 시간)');
+  const hourBox = el('div', 'chart'); cHour.appendChild(hourBox);
+  const cWd = card(two2, '요일별 게임 시작', '월요병은 진짜일까?');
+  const wdBox = el('div', 'chart'); cWd.appendChild(wdBox);
+  // 클릭
+  const two3 = el('div', 'grid two'); app.appendChild(two3);
+  const cClick = card(two3, '버튼·기능 클릭 수', '사용자가 누른 버튼과 기능별 횟수');
+  const clickBox = el('div', 'chart'); cClick.appendChild(clickBox);
+  const right = el('div', 'grid'); two3.appendChild(right);
+  const cBucket = card(right, '스트레스 분포', '끝까지 한 판의 결과 구간');
+  const bucketBox = el('div', 'chart'); cBucket.appendChild(bucketBox);
+  const cMo = card(right, '모션 vs 터치', '끝까지 한 판 중 폰을 흔들어서 했는지, 화면 터치로 했는지');
+  const mo = d.motion || { motion: 0, touch: 0 }, moT = (mo.motion || 0) + (mo.touch || 0);
+  const lg2 = el('div', 'legend'); [['모션', c1], ['터치', c2]].forEach(([n, c]) => { const s = el('span'); const i = el('i', 'bx'); i.style.background = c; s.appendChild(i); s.appendChild(document.createTextNode(n)); lg2.appendChild(s); }); cMo.appendChild(lg2);
+  if (moT) {
+    const sp = el('div', 'split'); const a = el('div'); a.style.width = `${(mo.motion / moT) * 100}%`; a.style.background = c1; const b = el('div'); b.style.flex = '1'; b.style.background = c2; sp.appendChild(a); sp.appendChild(b); cMo.appendChild(sp);
+    const sl = el('div', 'split-lbl'); const l1 = el('span'); l1.appendChild(document.createTextNode('모션 ')); l1.appendChild(el('b', null, `${pct(mo.motion, moT)}%`)); const l2 = el('span'); l2.appendChild(document.createTextNode('터치 ')); l2.appendChild(el('b', null, `${pct(mo.touch, moT)}%`)); sl.appendChild(l1); sl.appendChild(l2); cMo.appendChild(sl);
+  } else cMo.appendChild(el('div', 'empty', '아직 데이터가 없어요'));
+  // 기기·유입
+  const two4 = el('div', 'grid two'); app.appendChild(two4);
+  const cDev = card(two4, '기기', '방문자 기준'); const devBox = el('div', 'chart'); cDev.appendChild(devBox);
+  const cSrc = card(two4, '유입 경로', '어디서 들어왔는지 (방문자 기준, 상위 10개) · 링크에 ?utm_source=이름 을 붙이면 따로 집계돼요'); const srcBox = el('div', 'chart'); cSrc.appendChild(srcBox);
+
+  const draw = () => {
+    lineChart(trendBox, daily, [{ key: 'visitors', name: '방문자', color: c1 }, { key: 'plays', name: '게임 플레이', color: c2 }], (r, long) => { const [y, m, dd] = r.day.split('-'); return long ? `${+m}월 ${+dd}일 (${WD[new Date(r.day + 'T12:00:00').getDay()]})` : `${+m}/${+dd}`; });
+    hBars(roomBox, rooms.map((r) => ({ label: ROOM[r.room], value: r.plays || 0, r })), { color: c1, unit: '판', tipRows: (x) => [['시작', `${fmtN(x.r.plays)}판`, c1], ['완주', `${fmtN(x.r.finishes)}판`], ['완주율', `${pct(x.r.finishes, x.r.plays)}%`]] });
+    hBars(stressBox, rooms.map((r) => ({ label: ROOM[r.room], value: r.avg_stress || 0 })), { color: c1, unit: '%' });
+    const hours = Array.from({ length: 24 }, (_, h) => ({ h, value: ((d.hours || []).find((x) => x.hour === h) || {}).plays || 0 }));
+    vBars(hourBox, hours, { color: c1, label: (x) => `${x.h}`, tipTitle: (x) => `${x.h}시대`, labelEvery: hourBox.clientWidth < 420 ? 3 : 2 });
+    const wds = [1, 2, 3, 4, 5, 6, 0].map((i) => { const w = (d.weekdays || []).find((x) => x.dow === i) || {}; return { i, value: w.plays || 0, s: w.avg_stress }; });
+    vBars(wdBox, wds, { color: c1, label: (x) => WD[x.i], tipTitle: (x) => `${WD[x.i]}요일${x.s != null ? ` · 평균 스트레스 ${x.s}%` : ''}` });
+    const agg = {}; (d.clicks || []).forEach((c) => { agg[c.name] = (agg[c.name] || 0) + c.n; });
+    const clicks = Object.entries(agg).map(([name, n]) => ({ label: EVENT[name] || name, value: n, name })).sort((a, b) => b.value - a.value);
+    hBars(clickBox, clicks, { color: c1, unit: '회', tipRows: (x) => { const rows = [['합계', `${fmtN(x.value)}회`, c1]]; (d.clicks || []).filter((c) => c.name === x.name && c.room).forEach((c) => rows.push([ROOM[c.room] || c.room, `${fmtN(c.n)}회`])); return rows; } });
+    const sb = d.stress_buckets || {}; hBars(bucketBox, ['l1', 'l2', 'l3', 'l4'].map((kk) => ({ label: STRESS_LBL[kk], value: sb[kk] || 0 })), { color: c1, unit: '판' });
+    hBars(devBox, (d.devices || []).map((x) => ({ label: x.device, value: x.n })), { color: c1, unit: '명' });
+    hBars(srcBox, (d.sources || []).map((x) => ({ label: x.src, value: x.n })), { color: c1, unit: '명' });
+  };
+  draw();
+  let rt; window.onresize = () => { clearTimeout(rt); rt = setTimeout(draw, 150); };
+  matchMedia('(prefers-color-scheme: dark)').onchange = render;
+}
+
+/* ---------- 시작 ---------- */
+(async () => {
+  if (DEMO) { state.pass = 'demo'; state.data = await fetchStats('demo', state.days); render(); return; }
+  let saved = ''; try { saved = sessionStorage.getItem('oc_dash') || ''; } catch (e) { /* noop */ }
+  if (saved && cfg.url && cfg.key) { state.pass = saved; try { state.data = await fetchStats(saved, state.days); render(); return; } catch (e) { /* 비밀번호 다시 */ } }
+  gate();
+})();
+})();
+</script>
+</body>
+</html>

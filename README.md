@@ -26,3 +26,11 @@ Settings → Pages → Build and deployment → **Deploy from a branch** → `ma
 ```bash
 python3 -m http.server 8000   # http://localhost:8000
 ```
+
+## 📊 운영 대시보드 (익명 이용 통계)
+
+- 대시보드: `/dashboard/` (비밀번호로 잠김) · 예시 데이터 미리보기: `/dashboard/?demo`
+- 저장소: Supabase(무료). `analytics/setup.sql` 을 SQL Editor 에서 한 번 실행하고, `analytics-config.js` 에 Project URL 과 공개 키를 넣으면 수집이 시작됩니다.
+- 수집 항목: 익명 방문자 ID(무작위), 방문·이용 시간, 게임 시작/완료/중도 포기, 스트레스 %, 버튼 클릭, 기기, 유입 경로.
+  상사 이름과 직접 쓴 내용은 수집하지 않습니다. 로컬(localhost) 테스트와 '추적 안 함' 설정 브라우저는 집계에서 빠집니다.
+
