@@ -12,3 +12,10 @@
 
 ## 실사 버전
 - chamatda_1_situation_real.mp4 — 1편 상황극 (AI 실사 이미지)
+
+## 실사 + 나레이션 버전 (최종)
+- chamatda_1_situation_voice4.mp4 — 1편 퇴근 5분 전
+- chamatda_2_monday_voice.mp4 — 2편 월요병
+- chamatda_3_ranktest_voice.mp4 — 3편 칭호 테스트
+- chamatda_4_asmr_voice.mp4 — 4편 야근 ASMR
+- chamatda_5_report99_voice.mp4 — 5편 불금 워크숍
