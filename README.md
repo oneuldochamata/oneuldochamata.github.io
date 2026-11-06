@@ -9,3 +9,6 @@
 5. chamatda_5_report99.mp4 — 체감 리포트 99%
 
 커버 이미지: chamatda_N_cover.jpg
+
+## 실사 버전
+- chamatda_1_situation_real.mp4 — 1편 상황극 (AI 실사 이미지)
